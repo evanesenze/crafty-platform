@@ -1,36 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Auth } from '../auth/decortators/auth.decorator';
+import { CurrentUser } from '../auth/decortators/user.decorator';
+import { UserDto } from './dto/user.dto';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
+  @Auth()
+  @Get('profile')
+  getProfile(@CurrentUser('id') userId: string) {
+    return this.usersService.findOneById(userId);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @UsePipes(new ValidationPipe())
+  @Auth()
+  @Put('profile')
+  updateProfile(@CurrentUser('id') userId: string, @Body() dto: UserDto) {
+    return this.usersService.updateProfile(userId, dto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOneById(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateUser(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @Auth()
+  @Patch('profile/favorites/:productId')
+  toggleFavorites(@Param('productId') productId: string, @CurrentUser('id') userId: string) {
+    return this.usersService.toggleFavorites(userId, productId);
   }
 }

@@ -1,5 +1,5 @@
 import { CommonExecutor } from './Common.executor';
-import { Document, FilterQuery } from 'mongoose';
+import { Document, FilterQuery, UpdateQuery } from 'mongoose';
 
 export class CommonService<D extends Document, T extends CommonExecutor<D>> {
   constructor(private executor: T) { };
@@ -26,5 +26,9 @@ export class CommonService<D extends Document, T extends CommonExecutor<D>> {
 
   remove(id: string) {
     return this.executor.findByIdAndRemove(id);
+  }
+
+  findByIdAndUpdate(id: string, dto: UpdateQuery<D>) {
+    return this.executor.findByIdAndUpdate(id, dto);
   }
 }

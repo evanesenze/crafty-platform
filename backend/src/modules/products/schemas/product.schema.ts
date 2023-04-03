@@ -6,51 +6,38 @@ import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Category } from 'src/modules/categories/schemas/category.schema';
 
-export type UserDocument = HydratedDocument<User>;
+export type ProductDocument = HydratedDocument<Product>;
 
 @Schema()
-export class User extends CommonSchema {
-
+export class Product extends CommonSchema {
   @ApiProperty()
   @Prop()
   name: string;
 
   @ApiProperty()
   @Prop()
-  email: string;
+  slug: string;
 
   @ApiProperty()
   @Prop()
-  wallet: string;
+  description: string;
 
   @ApiProperty()
   @Prop()
-  type: string;
+  price: number;
 
   @ApiProperty()
   @Prop()
-  basket: string;
+  images: string[];
 
   @ApiProperty()
-  @Prop()
-  phone: string;
-
-  @ApiProperty()
-  @Prop()
-  avatar: string;
-
-  @ApiProperty()
-  @Prop()
-  password: string;
-
-  @ApiProperty()
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Category' }] })
-  favorites: Category[];
+  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  category: Category;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const ProductSchema = SchemaFactory.createForClass(Product);
 
-UserSchema.set('toJSON', {
+ProductSchema.set('toJSON', {
   transform: function (_, ret) {
     ret.id = ret._id;
     delete ret._id;
@@ -59,8 +46,8 @@ UserSchema.set('toJSON', {
 });
 
 @Injectable()
-export class UserExecutor extends CommonExecutor<UserDocument> {
-  constructor(@InjectModel(User.name) model: Model<UserDocument>) {
+export class ProductExecutor extends CommonExecutor<ProductDocument> {
+  constructor(@InjectModel(Product.name) model: Model<ProductDocument>) {
     super(model);
   }
 }
