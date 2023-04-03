@@ -4,9 +4,18 @@ import { HydratedDocument, Model, Types } from 'mongoose';
 import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Category } from 'src/modules/categories/schemas/category.schema';
+import { Category, ICategory } from 'src/modules/categories/schemas/category.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
+
+export interface IProduct {
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  images: string[];
+  category: ICategory;
+}
 
 @Schema()
 export class Product extends CommonSchema {
@@ -35,7 +44,7 @@ export class Product extends CommonSchema {
   category: Category;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product);
+export const ProductSchema = SchemaFactory.createForClass<IProduct>(Product);
 
 ProductSchema.set('toJSON', {
   transform: function (_, ret) {

@@ -7,14 +7,23 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type CategoryDocument = HydratedDocument<Category>;
 
+export interface ICategory {
+  name: string;
+  slug: string;
+}
+
 @Schema()
 export class Category extends CommonSchema {
   @ApiProperty()
   @Prop()
   name: string;
+
+  @ApiProperty()
+  @Prop()
+  slug: string;
 }
 
-export const CategorySchema = SchemaFactory.createForClass(Category);
+export const CategorySchema = SchemaFactory.createForClass<ICategory>(Category);
 
 CategorySchema.set('toJSON', {
   transform: function (_, ret) {
