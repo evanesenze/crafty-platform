@@ -1,27 +1,37 @@
+import { NotFoundException } from '@nestjs/common';
 import { CommonExecutor } from './Common.executor';
 import { Document, FilterQuery, UpdateQuery } from 'mongoose';
+
+export type CreateParam<T> = Omit<T, 'id'>;
+export type UpdateParam<T> = Partial<CreateParam<T>>;
 
 export class CommonService<D extends Document, T extends CommonExecutor<D>> {
   constructor(protected readonly executor: T) { };
 
-  protected create<DtoType>(dto: DtoType) {
+  protected create<DtoType>(dto: CreateParam<DtoType>) {
     return this.executor.create(dto);
   }
 
   findAll(populatedPath: string | string[] = '') {
-    return this.executor.find()?.populate(populatedPath).exec();
+    const item = this.executor.find();
+    if (!item) throw new NotFoundException();
+    return item.populate(populatedPath).exec();
   }
 
   findOneById(id: string, populatedPath: string | string[] = '') {
-    return this.executor.findById(id)?.populate(populatedPath).exec();
+    const item = this.executor.findById(id);
+    if (!item) throw new NotFoundException();
+    return item.populate(populatedPath).exec();
   }
 
   findOne(filter: FilterQuery<D>, populatedPath: string | string[] = '') {
-    return this.executor.findOne(filter)?.populate(populatedPath).exec();
+    const item = this.executor.findOne(filter);
+    if (!item) throw new NotFoundException();
+    return item.populate(populatedPath).exec();
   }
 
-  protected update<DtoType>(id: string, updateUserDto: DtoType) {
-    return this.executor.findByIdAndUpdate(id, updateUserDto);
+  protected update<DtoType>(id: string, dto: UpdateParam<DtoType>) {
+    return this.executor.findByIdAndUpdate(id, dto);
   }
 
   remove(id: string) {

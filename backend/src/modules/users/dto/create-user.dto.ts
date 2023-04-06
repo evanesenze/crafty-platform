@@ -1,36 +1,25 @@
-import { Prop } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsString } from "class-validator";
 
 export class CreateUserDto {
+  @IsString()
   @ApiProperty()
-  @Prop()
   name: string;
 
+  @IsString()
+  @IsEmail()
   @ApiProperty()
-  @Prop()
   email: string;
 
+  @IsString()
   @ApiProperty()
-  @Prop()
-  wallet: string;
-
-  @ApiProperty()
-  @Prop()
-  type: string;
-
-  @ApiProperty()
-  @Prop()
-  basket: string;
-
-  @ApiProperty()
-  @Prop()
   password: string;
 
+  @IsString()
   @ApiProperty()
-  @Prop()
   phone: string;
 
+  @IsString()
   @ApiProperty()
-  @Prop()
   avatar: string;
 }

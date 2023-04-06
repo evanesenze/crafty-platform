@@ -4,7 +4,6 @@ import { HydratedDocument, Model, Schema as MongooseSchema } from 'mongoose';
 import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Category } from 'src/modules/categories/schemas/category.schema';
 import { Product } from 'src/modules/products/schemas/product.schema';
 
 export type UserDocument = HydratedDocument<User>;
@@ -25,20 +24,16 @@ export class User extends CommonSchema {
   wallet: string;
 
   @ApiProperty()
-  @Prop()
-  type: string;
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Product' }] })
+  basket: Product[];
 
   @ApiProperty()
   @Prop()
-  basket: string;
+  phone?: string;
 
   @ApiProperty()
   @Prop()
-  phone: string;
-
-  @ApiProperty()
-  @Prop()
-  avatar: string;
+  avatar?: string;
 
   @ApiProperty()
   @Prop()

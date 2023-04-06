@@ -22,7 +22,6 @@ export class AuthService {
     }
   }
 
-
   async login(dto: AuthDto) {
     const user = await this.validateUser(dto);
     const tokens = await this.issueTokens(user.id);
@@ -32,19 +31,15 @@ export class AuthService {
     }
   }
 
-
   async register({ email, password }: AuthDto) {
     const existUser = await this.usersService.findOne({ email });
     if (existUser) throw new BadRequestException('User already exist');
     const user = await this.usersService.createUser({
       email,
-      basket: 'basket',
       name: faker.name.fullName(),
-      type: 'type',
-      wallet: 'wallet',
       password: await hash(password),
       avatar: faker.image.avatar(),
-      phone: faker.phone.number('+7 (###) ###-##-##')
+      phone: faker.phone.number('+7 (###) ###-##-##'),
     })
 
     const tokens = await this.issueTokens(user.id);

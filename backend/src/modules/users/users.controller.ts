@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Auth } from '../auth/decortators/auth.decorator';
 import { CurrentUser } from '../auth/decortators/user.decorator';
-import { UserDto } from './dto/user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -13,13 +13,13 @@ export class UsersController {
   @Auth()
   @Get('profile')
   async getProfile(@CurrentUser('id') userId: string) {
-    return this.usersService.findOneById(userId, 'favorites');
+    return this.usersService.getUser(userId);
   }
 
   @UsePipes(new ValidationPipe())
   @Auth()
-  @Put('profile')
-  updateProfile(@CurrentUser('id') userId: string, @Body() dto: UserDto) {
+  @Patch('profile')
+  updateProfile(@CurrentUser('id') userId: string, @Body() dto: UpdateUserDto) {
     return this.usersService.updateProfile(userId, dto);
   }
 

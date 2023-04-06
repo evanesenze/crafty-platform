@@ -1,24 +1,25 @@
-import { Prop } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { ArrayMinSize, IsNumber, IsString } from "class-validator";
 
 export class CreateProductDto {
   @ApiProperty()
-  @Prop()
+  @IsString()
   name: string;
 
   @ApiProperty()
-  @Prop()
+  @IsString()
   description: string;
 
   @ApiProperty()
-  @Prop()
+  @IsString()
   category: string;
 
   @ApiProperty()
-  @Prop()
+  @IsNumber()
   price: number;
 
   @ApiProperty()
-  @Prop()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
   images: string[];
 }

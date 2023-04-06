@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model, Types } from 'mongoose';
+import { HydratedDocument, Model, Schema as MongooseSchema } from 'mongoose';
 import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
@@ -10,20 +10,25 @@ import { User } from 'src/modules/users/schemas/user.schema';
 
 export type OrderDocument = HydratedDocument<Order>;
 
+export enum OrderStatus {
+  OK = 'OK',
+  BAD = 'BAD'
+}
+
 @Schema()
 export class Order extends CommonSchema {
 
   @ApiProperty()
-  @Prop({ enum: ['t', 'd'], default: 'd' })
-  @IsEnum(['t', 'd'])
-  status: string;
+  @Prop({ enum: OrderStatus, default: OrderStatus.OK })
+  @IsEnum(OrderStatus)
+  status: OrderStatus;
 
   @ApiProperty()
-  @Prop({ type: Types.ObjectId, ref: 'OrderItem' })
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'OrderItem' }] })
   items: OrderItem[];
 
   @ApiProperty()
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   user: User;
 }
 

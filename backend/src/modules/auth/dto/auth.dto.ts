@@ -8,7 +8,7 @@ export class AuthDto {
   email: string;
 
   @ApiProperty()
-  @MinLength(6, { message: 'Пароль < 6 символов' })
+  @MinLength(6)
   @IsString()
   password: string;
 }

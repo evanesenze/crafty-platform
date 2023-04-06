@@ -1,3 +1,4 @@
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import {
   Document,
   FilterQuery,
@@ -35,10 +36,11 @@ export abstract class CommonExecutor<T extends Document> {
     return entity.save();
   }
 
-  findOneAndUpdate(
+  async findOneAndUpdate(
     entityFilterQuery: FilterQuery<T>,
     updateEntityData: UpdateQuery<unknown>,
   ) {
+    await this.checkExisting(entityFilterQuery);
     return this.model.findOneAndUpdate(
       entityFilterQuery,
       updateEntityData,
@@ -48,28 +50,37 @@ export abstract class CommonExecutor<T extends Document> {
     );
   }
 
-  findByIdAndUpdate(
+  async findByIdAndUpdate(
     id: string,
     updateEntityData: UpdateQuery<T>,
   ) {
-    if (!isValidObjectId(id)) return null;
+    if (!isValidObjectId(id)) throw new ForbiddenException('Wrong id');
+    await this.checkExisting({ _id: id });
     return this.model.findByIdAndUpdate(id, updateEntityData, {
       new: true,
     });
   }
 
-  findByIdAndRemove(id: string) {
-    if (!isValidObjectId(id)) return null;
+  async findByIdAndRemove(id: string) {
+    if (!isValidObjectId(id)) throw new ForbiddenException('Wrong id');
+    await this.checkExisting({ _id: id });
     return this.model.findByIdAndRemove(id);
   }
 
-  findOneAndDelete(entityFilterQuery: FilterQuery<T>) {
+  async findOneAndDelete(entityFilterQuery: FilterQuery<T>) {
+    await this.checkExisting(entityFilterQuery);
     return this.model.findByIdAndRemove(
       entityFilterQuery,
     );
   }
 
-  deleteMany(entityFilterQuery: FilterQuery<T> = {}) {
+  async deleteMany(entityFilterQuery: FilterQuery<T> = {}) {
+    await this.checkExisting(entityFilterQuery);
     return this.model.deleteMany(entityFilterQuery);
+  }
+
+  private async checkExisting(filter: FilterQuery<T>) {
+    const isExist = await this.model.exists(filter).exec();
+    if (!isExist) throw new NotFoundException();
   }
 }

@@ -1,26 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { CommonService } from 'src/shared/Common.service';
+import { OrderDocument, OrderExecutor } from './schemas/order.schema';
 
 @Injectable()
-export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+export class OrdersService extends CommonService<OrderDocument, OrderExecutor> {
+  constructor(executor: OrderExecutor) {
+    super(executor);
+  };
+
+  createOrder(dto: CreateOrderDto) {
+    return this.create(dto);
   }
 
-  findAll() {
-    return `This action returns all orders`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
-
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  updateOrder(id: string, dto: UpdateOrderDto) {
+    return this.update(id, dto);
   }
 }

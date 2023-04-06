@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CategoryDocument, CategoryExecutor } from './schemas/category.schema';
-import { CommonService } from 'src/shared/Common.service';
+import { Category, CategoryDocument, CategoryExecutor } from './schemas/category.schema';
+import { CommonService, UpdateParam } from 'src/shared/Common.service';
 import { getSlug } from 'src/shared/extra';
 
 @Injectable()
@@ -13,13 +13,23 @@ export class CategoriesService extends CommonService<CategoryDocument, CategoryE
   };
 
   async createCategory(dto: CreateCategoryDto) {
-    const slug = getSlug(dto.name);
-    const existCategory = await this.findOne({ slug });
-    if (existCategory) throw new BadRequestException('Category with same slug already exist');
-    return this.create({ ...dto, slug });
+    const slug = await this.getCategorySlug(dto.name);
+    return this.create<Category>({ ...dto, slug, });
   }
 
-  updateCategory(id: string, dto: UpdateCategoryDto) {
-    return this.update(id, dto);
+  async updateCategory(id: string, dto: UpdateCategoryDto) {
+    let body: UpdateParam<Category> = { ...dto };
+    if (dto.name) {
+      const slug = await this.getCategorySlug(dto.name);
+      body = { ...body, slug };
+    }
+    return this.update<Category>(id, body)
+  }
+
+  private async getCategorySlug(name: string) {
+    const slug = getSlug(name);
+    const existCategory = await this.findOne({ slug });
+    if (existCategory) throw new BadRequestException('Category already exist');
+    return slug;
   }
 }
