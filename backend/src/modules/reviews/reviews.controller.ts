@@ -20,19 +20,23 @@ export class ReviewsController {
 
   @Get()
   findAll() {
-    return this.reviewsService.findAll();
+    return this.reviewsService.findAll(['user', 'product']);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.reviewsService.getAverageValueByProductId(id);
+    return this.reviewsService.findOneById(id, ['user', 'product']);
   }
 
+  @UsePipes(new ValidationPipe())
+  @Auth()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
     return this.reviewsService.updateReview(id, updateReviewDto);
   }
 
+  @UsePipes(new ValidationPipe())
+  @Auth()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reviewsService.remove(id);

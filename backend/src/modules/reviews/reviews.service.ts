@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { CommonService } from 'src/shared/Common.service';
@@ -9,23 +9,23 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class ReviewsService extends CommonService<ReviewDocument, ReviewExecutor> {
-  constructor(executor: ReviewExecutor, private productService: ProductsService, @InjectModel(Review.name) private productModel: Model<ReviewDocument>) {
+  constructor(executor: ReviewExecutor, private productService: ProductsService, @InjectModel(Review.name) private reviewModel: Model<ReviewDocument>) {
     super(executor);
   };
 
   async createReview(userId: string, dto: CreateReviewDto) {
-    const { productId, rating, text } = dto;
-    const existProduct = await this.productService.findOneById(productId);
-    if (!existProduct) throw new BadRequestException('Product not found');
-    return this.create({ rating, text, user: userId, product: productId });
+    const { product, rating, text } = dto;
+    await this.productService.findOneById(product);
+    return this.create({ rating, text, user: userId, product });
   }
 
-  updateReview(id: string, dto: UpdateReviewDto) {
+  async updateReview(id: string, dto: UpdateReviewDto) {
+    if (dto.product) await this.productService.findOneById(dto.product);
     return this.update(id, dto);
   }
 
   async getAverageValueByProductId(productiId: string) {
-    // const res = await this.productModel.aggregate<Model<ReviewDocument>>([
+    // const res = await this.reviewModel.aggregate<Model<ReviewDocument>>([
     //   { $match: { product: productiId } },
     //   {
     //     $facet: {
