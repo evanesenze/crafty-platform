@@ -29,7 +29,7 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
   }
 
   async toggleFavorites(userId: string, productId: string) {
-    const user = await this.findOneById(userId);
+    const user = await this.findOneById(userId, 'favorites');
     if (!user) throw new NotFoundException('User not found');
     const isExist = user.favorites.some(item => item.id === productId);
     await this.findByIdAndUpdate(userId, { [isExist ? '$unset' : '$set']: { favorites: [productId] } });

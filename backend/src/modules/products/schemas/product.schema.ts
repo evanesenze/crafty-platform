@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model, Types } from 'mongoose';
+import { HydratedDocument, Model, Schema as MongooseSchema } from 'mongoose';
 import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
@@ -40,7 +40,7 @@ export class Product extends CommonSchema {
   images: string[];
 
   @ApiProperty()
-  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
   category: Category;
 }
 
@@ -53,6 +53,7 @@ ProductSchema.set('toJSON', {
     delete ret.__v;
   },
 });
+
 
 @Injectable()
 export class ProductExecutor extends CommonExecutor<ProductDocument> {

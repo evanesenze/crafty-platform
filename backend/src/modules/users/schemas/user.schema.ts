@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model, Types } from 'mongoose';
+import { HydratedDocument, Model, Schema as MongooseSchema } from 'mongoose';
 import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Category } from 'src/modules/categories/schemas/category.schema';
+import { Product } from 'src/modules/products/schemas/product.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -44,8 +45,8 @@ export class User extends CommonSchema {
   password: string;
 
   @ApiProperty()
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Category' }] })
-  favorites: Category[];
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Product' }] })
+  favorites: Product[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

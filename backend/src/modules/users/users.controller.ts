@@ -12,8 +12,8 @@ export class UsersController {
 
   @Auth()
   @Get('profile')
-  getProfile(@CurrentUser('id') userId: string) {
-    return this.usersService.findOneById(userId);
+  async getProfile(@CurrentUser('id') userId: string) {
+    return this.usersService.findOneById(userId, 'favorites');
   }
 
   @UsePipes(new ValidationPipe())
@@ -24,7 +24,7 @@ export class UsersController {
   }
 
   @Auth()
-  @Patch('profile/favorites/:productId')
+  @Post('profile/favorites/:productId')
   toggleFavorites(@Param('productId') productId: string, @CurrentUser('id') userId: string) {
     return this.usersService.toggleFavorites(userId, productId);
   }

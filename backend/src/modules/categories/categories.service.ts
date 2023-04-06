@@ -1,26 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryDocument, CategoryExecutor } from './schemas/category.schema';
+import { CommonService } from 'src/shared/Common.service';
+import { getSlug } from 'src/shared/extra';
 
 @Injectable()
-export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+export class CategoriesService extends CommonService<CategoryDocument, CategoryExecutor> {
+
+  constructor(executor: CategoryExecutor) {
+    super(executor);
+  };
+
+  async createCategory(dto: CreateCategoryDto) {
+    const slug = getSlug(dto.name);
+    const existCategory = await this.findOne({ slug });
+    if (existCategory) throw new BadRequestException('Category with same slug already exist');
+    return this.create({ ...dto, slug });
   }
 
-  findAll() {
-    return `This action returns all categories`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
-
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  updateCategory(id: string, dto: UpdateCategoryDto) {
+    return this.update(id, dto);
   }
 }
