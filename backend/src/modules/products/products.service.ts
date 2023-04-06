@@ -21,4 +21,5 @@ export class ProductsService extends CommonService<ProductDocument, ProductExecu
   updateProduct(id: string, dto: UpdateProductDto) {
     return this.update(id, dto);
   }
+
 }

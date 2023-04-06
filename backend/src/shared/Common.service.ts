@@ -9,15 +9,15 @@ export class CommonService<D extends Document, T extends CommonExecutor<D>> {
   }
 
   findAll(populatedPath: string | string[] = '') {
-    return this.executor.find().populate(populatedPath).exec();
+    return this.executor.find()?.populate(populatedPath).exec();
   }
 
   findOneById(id: string, populatedPath: string | string[] = '') {
-    return this.executor.findById(id).populate(populatedPath).exec();
+    return this.executor.findById(id)?.populate(populatedPath).exec();
   }
 
   findOne(filter: FilterQuery<D>, populatedPath: string | string[] = '') {
-    return this.executor.findOne(filter).populate(populatedPath).exec();
+    return this.executor.findOne(filter)?.populate(populatedPath).exec();
   }
 
   protected update<DtoType>(id: string, updateUserDto: DtoType) {

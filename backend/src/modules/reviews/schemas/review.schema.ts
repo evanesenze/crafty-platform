@@ -18,10 +18,10 @@ export class Review extends CommonSchema {
 
   @ApiProperty()
   @Prop()
-  text: string[];
+  text: string;
 
   @ApiProperty()
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   user: User;
 
   @ApiProperty()
