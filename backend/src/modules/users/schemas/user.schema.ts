@@ -5,11 +5,21 @@ import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Product } from 'src/modules/products/schemas/product.schema';
+import { IsEnum } from 'class-validator';
 
 export type UserDocument = HydratedDocument<User>;
 
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN'
+}
+
 @Schema()
 export class User extends CommonSchema {
+
+  @Prop({ enum: UserRole, default: UserRole.USER })
+  @IsEnum(UserRole)
+  role: UserRole;
 
   @ApiProperty()
   @Prop()
@@ -18,10 +28,6 @@ export class User extends CommonSchema {
   @ApiProperty()
   @Prop()
   email: string;
-
-  @ApiProperty()
-  @Prop()
-  wallet: string;
 
   @ApiProperty()
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Product' }] })
@@ -43,6 +49,10 @@ export class User extends CommonSchema {
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Product' }] })
   favorites: Product[];
 }
+
+// @ApiProperty()
+// @Prop()
+// wallet: string;
 
 export const UserSchema = SchemaFactory.createForClass(User);
 

@@ -12,6 +12,10 @@ export class CommonService<D extends Document, T extends CommonExecutor<D>> {
     return this.executor.create(dto);
   }
 
+  search(query: string) {
+    return this.executor.search({ query });
+  }
+
   findAll(populatedPath: string | string[] = '') {
     const item = this.executor.find();
     if (!item) throw new NotFoundException();

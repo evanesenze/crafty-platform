@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { CreateOrderDto } from '../dto/create-order.dto';
+import { UpdateOrderDto } from '../dto/update-order.dto';
 import { CommonService } from 'src/shared/Common.service';
-import { OrderDocument, OrderExecutor } from './schemas/order.schema';
+import { OrderDocument, OrderExecutor } from '../schemas/order.schema';
 
 @Injectable()
 export class OrdersService extends CommonService<OrderDocument, OrderExecutor> {

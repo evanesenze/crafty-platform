@@ -11,15 +11,19 @@ import { User } from 'src/modules/users/schemas/user.schema';
 export type OrderDocument = HydratedDocument<Order>;
 
 export enum OrderStatus {
-  OK = 'OK',
-  BAD = 'BAD'
+  CREATED = 'CREATED',
+  PAYED = 'PAYED',
+  DELIVERY = 'DELIVERY',
+  COMPLETED = 'COMPLETED',
+  DISPUTE = 'DISPUTE',
+  CANCELED = 'CANCELED',
 }
 
 @Schema()
 export class Order extends CommonSchema {
 
   @ApiProperty()
-  @Prop({ enum: OrderStatus, default: OrderStatus.OK })
+  @Prop({ enum: OrderStatus, default: OrderStatus.CREATED })
   @IsEnum(OrderStatus)
   status: OrderStatus;
 
@@ -29,7 +33,11 @@ export class Order extends CommonSchema {
 
   @ApiProperty()
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
-  user: User;
+  buyer: User;
+
+  @ApiProperty()
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
+  seller: User;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

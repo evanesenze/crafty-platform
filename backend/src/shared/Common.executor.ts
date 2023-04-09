@@ -3,13 +3,54 @@ import {
   Document,
   FilterQuery,
   Model,
+  PipelineStage,
   ProjectionType,
   UpdateQuery,
   isValidObjectId,
 } from 'mongoose';
 
+interface IExecutorSearch {
+  query?: string;
+  sort?: Record<string, 1 | -1>;
+  skip?: number;
+  limit?: number;
+}
+
+const getSearchPipeline = (query: string): PipelineStage => ({
+  $search: {
+    index: "ProductsIndex",
+    text: {
+      query,
+      path: {
+        wildcard: "*"
+      }
+    }
+  }
+});
+
+const getSortPipeline = (sort: Record<string, 1 | -1>): PipelineStage => ({
+  $sort: sort
+});
+
+const getLimitPipeline = (limit: number): PipelineStage => ({
+  $limit: limit
+});
+
+const getSkipPipeline = (skip: number): PipelineStage => ({
+  $skip: skip
+});
+
 export abstract class CommonExecutor<T extends Document> {
   constructor(protected readonly model: Model<T>) { }
+
+  async search({ query, sort, limit, skip }: IExecutorSearch) {
+    const stage: PipelineStage[] = [];
+    if (query) stage.push(getSearchPipeline(query));
+    if (sort) stage.push(getSortPipeline(sort));
+    if (skip) stage.push(getSkipPipeline(skip));
+    if (limit) stage.push(getLimitPipeline(limit));
+    return await this.model.aggregate<T>(stage).exec();
+  }
 
   findOne(
     entityFilterQuery: FilterQuery<T>,
