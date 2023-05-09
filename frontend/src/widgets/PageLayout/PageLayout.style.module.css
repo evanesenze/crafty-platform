@@ -1,0 +1,46 @@
+:root {
+    --bg-color: white;
+}
+
+.layout {
+    height: 100%;
+    background-color: var(--bg-color);
+}
+
+.layout__header {
+    height: 200px;
+    padding: 50px 70px 0;
+    background-color: var(--bg-color);
+    display: grid;
+    grid-template-areas:
+        'a b c'
+        'd e e';
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 55px auto;
+    gap: 25px 50px;
+}
+
+.layout_header__logo {
+    grid-area: a;
+}
+
+.layout_header__search {
+    max-width: 530px;
+    grid-area: b;
+}
+
+.layout_header__controls {
+    grid-area: c;
+}
+
+.layout_header__categories_button {
+    grid-area: d;
+}
+
+.layout_header__categories_list {
+    grid-area: e;
+}
+
+.layout__content {
+    overflow: auto;
+}

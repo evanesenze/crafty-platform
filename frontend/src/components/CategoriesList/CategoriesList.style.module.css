@@ -1,0 +1,6 @@
+.categories_list {
+    margin-right: -70px;
+    font-size: 24px;
+    overflow-y: auto;
+    white-space: nowrap;
+}

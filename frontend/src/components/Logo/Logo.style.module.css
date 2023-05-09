@@ -1,0 +1,14 @@
+.logo {
+    text-transform: uppercase;
+    font-weight: 600;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo > a {
+    color: black;
+    font-size: 36px;
+    line-height: 36px;
+}

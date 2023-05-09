@@ -1,0 +1,11 @@
+.categories_button {
+    font-size: 24px;
+    font-weight: 500;
+    user-select: none;
+    cursor: pointer;
+    /* height: 20px; */
+}
+
+/* .categories_button__list li {
+    font-size: 20px;
+} */
