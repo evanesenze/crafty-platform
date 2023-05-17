@@ -1,1 +1,3 @@
-export * from './PageLayout/PageLayout.component';
+export * from './PageLayout';
+export * from './ProductsBlock';
+export * from './CartLayout';

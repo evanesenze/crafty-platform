@@ -1,0 +1,14 @@
+.cart_item_container {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 20px;
+}
+
+.cart_item_image {
+    aspect-ratio: 4/3;
+    height: 200px;
+    background-position: center;
+    background-size: cover;
+    border: 1px solid black;
+    border-radius: 3px;
+}

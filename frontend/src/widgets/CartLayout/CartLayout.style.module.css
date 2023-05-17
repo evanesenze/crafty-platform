@@ -1,0 +1,10 @@
+.cart_layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.cart_layout__item {
+    display: grid;
+    grid-template-columns: 33px auto;
+    gap: 36px;
+}

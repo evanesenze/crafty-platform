@@ -26,6 +26,7 @@
 
 .layout_header__search {
     max-width: 530px;
+    min-width: 400px;
     grid-area: b;
 }
 
@@ -43,4 +44,5 @@
 
 .layout__content {
     overflow: auto;
+    padding: 30px 70px;
 }

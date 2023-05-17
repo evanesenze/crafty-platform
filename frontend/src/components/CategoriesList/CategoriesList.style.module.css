@@ -1,6 +1,14 @@
 .categories_list {
     margin-right: -70px;
     font-size: 24px;
-    overflow-y: auto;
     white-space: nowrap;
+    user-select: none;
+}
+
+.categories_list__item {
+    cursor: pointer;
+}
+
+.categories_list__item:hover {
+    border-bottom: 2px solid black;
 }

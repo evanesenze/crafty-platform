@@ -13,8 +13,10 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
+            assets: '/src/assets',
             components: '/src/components',
             pages: '/src/pages',
+            utils: '/src/utils',
             widgets: '/src/widgets'
         }
     }

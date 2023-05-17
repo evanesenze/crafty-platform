@@ -4,10 +4,11 @@ import style from './HeaderControls.style.module.css';
 import cn from 'classnames';
 import { Menu, MenuProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import { useNavigate } from 'react-router-dom';
 
 export enum ControlState {
     Add = 'add',
-    User = 'user',
+    Profile = 'profile',
     Shop = 'shop',
     Favorite = 'favorite',
     Cart = 'cart',
@@ -19,7 +20,7 @@ const items: MenuItemType[] = [
         itemIcon: <PlusOutlined className={style.header_control} />,
     },
     {
-        key: ControlState.User,
+        key: ControlState.Profile,
         itemIcon: <UserOutlined className={style.header_control} />,
     },
     {
@@ -44,10 +45,14 @@ export type HeaderControlsProps = MenuProps & {
 
 export const HeaderControls: React.FC<HeaderControlsProps> = ({ exclude, include, ...props }) => {
     const className = cn(style.header_controls, props.className);
-
+    const nav = useNavigate();
     const tabs = include
         ? items.filter((item) => include.includes(item.key as ControlState))
         : items.filter((item) => !exclude?.includes(item.key as ControlState));
 
-    return <Menu {...props} className={className} mode="horizontal" items={tabs} />;
+    const onSelect = (info: { key: string }) => {
+        nav(info.key);
+    };
+
+    return <Menu {...props} onChange={console.log} onSelect={onSelect} className={className} mode="horizontal" items={tabs} />;
 };

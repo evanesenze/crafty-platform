@@ -21,7 +21,7 @@ export const PageLayout: React.FC = () => {
                 <CategoriesButton className={style.layout_header__categories_button} />
                 <CategoriesList className={style.layout_header__categories_list} />
             </Header>
-            <Content>
+            <Content className={style.layout__content}>
                 <Outlet />
             </Content>
         </Layout>
