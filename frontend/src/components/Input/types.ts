@@ -1,4 +1,4 @@
-import { SearchProps, InputProps } from 'antd/es/input';
+import { SearchProps, InputProps, PasswordProps, TextAreaProps } from 'antd/es/input';
 
 export type DefaultComponentProps = {
     type?: 'default';
@@ -10,6 +10,16 @@ export type SearchComponentProps = {
     props?: SearchProps;
 };
 
-export type ComponentProps = DefaultComponentProps | SearchComponentProps;
+export type PasswordComponentProps = {
+    type: 'password';
+    props?: PasswordProps;
+};
+
+export type TextAreaComponentProps = {
+    type: 'textArea';
+    props?: TextAreaProps;
+};
+
+export type ComponentProps = DefaultComponentProps | SearchComponentProps | PasswordComponentProps | TextAreaComponentProps;
 
 export type InputType = ComponentProps['type'];

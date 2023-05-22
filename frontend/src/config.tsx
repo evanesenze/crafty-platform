@@ -1,42 +1,18 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { Home, Cart, Error, NotFound, Profile } from 'pages';
 import { ThemeConfig } from 'antd';
-import { PageLayout } from 'widgets';
 
 export const clientRoutes = {
     home: '/',
+    404: '/404',
+    auth: '/auth',
     products: '/products',
     product: '/products/:id',
     getProductsPath: (category: string) => `/products?category=${category}`,
     cart: '/cart',
     profile: '/profile',
+    create: '/create',
+    orders: '/orders',
+    favorites: '/favorites',
 } as const;
-
-export const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <PageLayout />,
-        errorElement: <Error />,
-        children: [
-            {
-                path: clientRoutes.home,
-                element: <Home />,
-            },
-            {
-                path: clientRoutes.cart,
-                element: <Cart />,
-            },
-            {
-                path: clientRoutes.profile,
-                element: <Profile />,
-            },
-            {
-                path: '*',
-                element: <NotFound />,
-            },
-        ],
-    },
-]);
 
 export const theme: ThemeConfig = {
     token: {

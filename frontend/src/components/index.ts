@@ -6,3 +6,4 @@ export * from './CategoriesList';
 export * from './AdsBlock';
 export * from './ProductCard';
 export * from './CartItemContainer';
+export * from './Image';

@@ -1,6 +1,7 @@
 import { Divider, Rate, Space, Typography } from 'antd';
-import { CartItemContainer } from 'components';
+import { CartItemContainer, Image } from 'components';
 import React from 'react';
+import { Rating } from 'widgets';
 
 const { Text } = Typography;
 
@@ -12,15 +13,7 @@ export const Profile: React.FC = () => {
         <div style={{ display: 'grid', gridTemplateColumns: '3fr 4fr', gap: 20 }}>
             <div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', height: 200, gap: 15, marginBottom: 40 }}>
-                    <div
-                        style={{
-                            backgroundImage: `url(${avatar})`,
-                            height: 200,
-                            aspectRatio: '6/5',
-                            backgroundPosition: 'center',
-                            backgroundSize: 'cover',
-                        }}
-                    ></div>
+                    <Image src={avatar} height="200px" />
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <Text strong ellipsis style={{ fontSize: 32 }}>
                             Петр Иванов
@@ -28,10 +21,7 @@ export const Profile: React.FC = () => {
                         <Text strong style={{ fontSize: 14, color: 'gray' }}>
                             Изменить профиль
                         </Text>
-                        <Space>
-                            <Text strong>5.0</Text>
-                            <Rate value={5} />
-                        </Space>
+                        <Rating value={4.99} disabled />
                         <Text strong>26 отзывов</Text>
                     </div>
                 </div>

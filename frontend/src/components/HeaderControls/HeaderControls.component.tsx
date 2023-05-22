@@ -7,16 +7,16 @@ import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { useNavigate } from 'react-router-dom';
 
 export enum ControlState {
-    Add = 'add',
+    Create = 'create',
     Profile = 'profile',
-    Shop = 'shop',
-    Favorite = 'favorite',
+    Orders = 'orders',
+    Favorites = 'favorites',
     Cart = 'cart',
 }
 
 const items: MenuItemType[] = [
     {
-        key: ControlState.Add,
+        key: ControlState.Create,
         itemIcon: <PlusOutlined className={style.header_control} />,
     },
     {
@@ -24,11 +24,11 @@ const items: MenuItemType[] = [
         itemIcon: <UserOutlined className={style.header_control} />,
     },
     {
-        key: ControlState.Shop,
+        key: ControlState.Orders,
         itemIcon: <ShoppingOutlined className={style.header_control} />,
     },
     {
-        key: ControlState.Favorite,
+        key: ControlState.Favorites,
         itemIcon: <HeartOutlined className={style.header_control} />,
     },
 
