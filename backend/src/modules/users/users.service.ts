@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { User, UserDocument, UserExecutor } from './schemas/user.schema';
+import { User, UserDocument, UserExecutor, UserRole } from './schemas/user.schema';
 import { CommonService } from 'src/shared/Common.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { hash } from 'argon2';
@@ -14,7 +14,7 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
   };
 
   createUser(dto: CreateUserDto) {
-    return this.create<Omit<User, 'id'>>({ ...dto, basket: [], favorites: [], wallet: '' });
+    return this.create<Omit<User, 'id'>>({ ...dto, basket: [], favorites: [], role: UserRole.USER});
   }
 
   async getUser(id: string) {

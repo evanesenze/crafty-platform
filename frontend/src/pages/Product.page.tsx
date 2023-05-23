@@ -1,5 +1,5 @@
 import { Button, Col, ConfigProvider, List, Rate, Row, Space, Typography } from 'antd';
-import { clientRoutes } from '../config';
+import { clientRoutes } from '../utils/config';
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { Image } from 'components';

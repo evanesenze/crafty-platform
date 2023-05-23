@@ -3,7 +3,7 @@ import style from './ProductCard.style.module.css';
 import { Typography } from 'antd';
 import { getPrice } from 'utils';
 import { Link, generatePath } from 'react-router-dom';
-import { clientRoutes } from '../../config';
+import { clientRoutes } from '../../utils/config';
 
 export type ProductCardProps = {
     id: string;

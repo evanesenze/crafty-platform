@@ -1,5 +1,7 @@
 import { ThemeConfig } from 'antd';
 
+export const SERVER_URL = 'http://localhost:3001/api/';
+
 export const clientRoutes = {
     home: '/',
     404: '/404',

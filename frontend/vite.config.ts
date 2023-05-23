@@ -18,6 +18,8 @@ export default defineConfig({
             pages: '/src/pages',
             utils: '/src/utils',
             widgets: '/src/widgets',
+            hooks: '/src/hooks',
+            store: '/src/store',
         },
     },
 });

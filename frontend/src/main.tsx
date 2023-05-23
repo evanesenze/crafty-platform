@@ -1,4 +1,4 @@
-import { theme, clientRoutes } from './config';
+import { theme, clientRoutes } from 'utils';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
@@ -10,6 +10,8 @@ import { PageLayout } from 'widgets';
 import { createBrowserRouter } from 'react-router-dom';
 import { Home, Cart, Error, NotFound, Profile, Auth, Create, Orders, Favorites, Products, Product } from 'pages';
 import ru from 'antd/locale/ru_RU';
+import { Provider } from 'react-redux';
+import { store } from 'store';
 
 const router = createBrowserRouter([
     {
@@ -69,7 +71,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <ConfigProvider theme={theme} locale={ru}>
             <IntlProvider locale="ru">
-                <RouterProvider router={router} />
+                <Provider store={store}>
+                    <RouterProvider router={router} />
+                </Provider>
             </IntlProvider>
         </ConfigProvider>
     </React.StrictMode>

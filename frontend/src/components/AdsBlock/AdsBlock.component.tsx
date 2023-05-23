@@ -1,5 +1,5 @@
 import { Carousel, Image } from 'antd';
-import { clientRoutes } from '../../config';
+import { clientRoutes } from '../../utils/config';
 import React, { useMemo, useState } from 'react';
 import { Link, generatePath } from 'react-router-dom';
 

@@ -1,17 +1,19 @@
 import { Button, ConfigProvider, Form, Typography } from 'antd';
 import { Input } from 'components';
-import { clientRoutes } from '../config';
-import React from 'react';
+import { clientRoutes } from '../utils/config';
+import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useLoginMutation } from 'store';
 
 const { Title, Text } = Typography;
 
 const passwordHelp = <Text style={{ display: 'block', textAlign: 'end', fontSize: 12, cursor: 'pointer' }}>Забыли пароль?</Text>;
 
-const isAuth = true;
+const isAuth = false;
 
 export const Auth: React.FC = () => {
     if (isAuth) return <Navigate to={clientRoutes.home} />;
+    const [login] = useLoginMutation();
 
     return (
         <ConfigProvider theme={{ token: { colorText: 'white', colorBgContainer: 'black', colorBorder: 'white', colorIcon: 'white' } }}>

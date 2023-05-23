@@ -21,7 +21,9 @@
             "components/*": ["components/*"],
             "pages/*": ["pages/*"],
             "utils/*": ["utils/*"],
-            "widgets/*": ["widgets/*"]
+            "widgets/*": ["widgets/*"],
+            "hooks/*": ["hooks/*"],
+            "store/*": ["store/*"]
         }
     },
     "include": ["src"],
