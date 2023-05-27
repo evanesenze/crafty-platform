@@ -45,21 +45,21 @@ export class OrdersController {
     return this.ordersService.remove(id);
   }
 
-  @Get(':orderId/item/:itemId')
+  @Get(':orderId/items/:itemId')
   findOneItem(@Param('orderId') orderId: string, @Param('itemId') itemId: string) {
     return this.orderItemsService.findOneById('');
   }
 
   @UsePipes(new ValidationPipe())
   @Auth()
-  @Patch(':orderId/item/:itemId')
+  @Patch(':orderId/items/:itemId')
   updateItem(@Param('orderId') orderId: string, @Param('itemId') itemId: string, @Body() updateOrderDto: UpdateOrderItemDto) {
     return this.orderItemsService.updateItem('', updateOrderDto);
   }
 
   @UsePipes(new ValidationPipe())
   @Auth()
-  @Delete(':orderId/item/:itemId')
+  @Delete(':orderId/items/:itemId')
   removeItem(@Param('orderId') orderId: string, @Param('itemId') itemId: string) {
     return this.orderItemsService.remove('');
   }

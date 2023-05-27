@@ -12,7 +12,21 @@ export const authApi = createApi({
                 body,
             }),
         }),
+        refresh: mutation<any, any>({
+            query: (body) => ({
+                method: 'POST',
+                url: 'login/refresh',
+                body,
+            }),
+        }),
+        register: mutation<any, any>({
+            query: (body) => ({
+                method: 'POST',
+                url: 'register',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useRefreshMutation, useRegisterMutation } = authApi;
