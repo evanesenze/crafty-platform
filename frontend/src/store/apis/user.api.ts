@@ -1,6 +1,17 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
 
+export type UserProfile = {
+    role: string;
+    name: string;
+    email: string;
+    basket: any[];
+    phone: string;
+    avatar: string;
+    favorites: any[];
+    id: string;
+};
+
 export const userApi = createApi({
     reducerPath: 'user/api',
     baseQuery: getBaseQuery('users'),
@@ -12,10 +23,10 @@ export const userApi = createApi({
                 body,
             }),
         }),
-        getProfile: query<any, any>({
+        getProfile: query<UserProfile, void>({
             query: () => 'profile',
         }),
-        updateProfile: mutation<any, any>({
+        updateProfile: mutation<any, Partial<UserProfile>>({
             query: (body) => ({
                 method: 'PATCH',
                 url: 'profile',

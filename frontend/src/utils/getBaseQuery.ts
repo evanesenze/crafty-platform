@@ -1,9 +1,15 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query';
 import { SERVER_URL } from './config';
-import { FetchBaseQueryArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
+import { FetchBaseQueryArgs, ResponseHandler } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
+import { RootState } from 'store';
 
-const prepareHeaders: FetchBaseQueryArgs['prepareHeaders'] = (headers, api) => {
+const prepareHeaders: FetchBaseQueryArgs['prepareHeaders'] = (headers, { getState }) => {
+    const { accessToken } = (getState() as RootState).auth;
+    headers.append('content-type', 'application/json');
+    accessToken && headers.append('Authorization', `Bearer ${accessToken}`);
     return headers;
 };
+
+const responseHandler: ResponseHandler = async () => {};
 
 export const getBaseQuery = (url?: string) => fetchBaseQuery({ baseUrl: SERVER_URL + (url ? url + '/' : ''), prepareHeaders });

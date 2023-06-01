@@ -6,12 +6,13 @@ import 'antd/dist/reset.css';
 import { ConfigProvider } from 'antd';
 import './style.less';
 import { IntlProvider } from 'react-intl';
-import { PageLayout } from 'widgets';
+import { AuthProvider, PageLayout } from 'widgets';
 import { createBrowserRouter } from 'react-router-dom';
 import { Home, Cart, Error, NotFound, Profile, Auth, Create, Orders, Favorites, Products, Product } from 'pages';
 import ru from 'antd/locale/ru_RU';
 import { Provider } from 'react-redux';
 import { store } from 'store';
+import { CookiesProvider } from 'react-cookie';
 
 const router = createBrowserRouter([
     {
@@ -33,7 +34,11 @@ const router = createBrowserRouter([
             },
             {
                 path: clientRoutes.profile,
-                element: <Profile />,
+                element: (
+                    <AuthProvider>
+                        <Profile />
+                    </AuthProvider>
+                ),
             },
             {
                 path: clientRoutes.create,
@@ -72,7 +77,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <ConfigProvider theme={theme} locale={ru}>
             <IntlProvider locale="ru">
                 <Provider store={store}>
-                    <RouterProvider router={router} />
+                    <CookiesProvider>
+                        <RouterProvider router={router} />
+                    </CookiesProvider>
                 </Provider>
             </IntlProvider>
         </ConfigProvider>

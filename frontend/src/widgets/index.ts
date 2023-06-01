@@ -5,3 +5,4 @@ export * from './PicturesWall';
 export * from './ProductsWall';
 export * from './Comment';
 export * from './Rating';
+export * from './AuthProvider';

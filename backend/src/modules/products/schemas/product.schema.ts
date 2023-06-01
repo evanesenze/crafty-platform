@@ -5,6 +5,7 @@ import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Category, ICategory } from 'src/modules/categories/schemas/category.schema';
+import { User } from 'src/modules/users/schemas/user.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -42,6 +43,10 @@ export class Product extends CommonSchema {
   @ApiProperty()
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
   category: Category;
+  
+  @ApiProperty()
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
+  owner: User;
 }
 
 export const ProductSchema = SchemaFactory.createForClass<IProduct>(Product);

@@ -1,5 +1,14 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { User, UserDocument, UserExecutor, UserRole } from './schemas/user.schema';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  User,
+  UserDocument,
+  UserExecutor,
+  UserRole,
+} from './schemas/user.schema';
 import { CommonService } from 'src/shared/Common.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { hash } from 'argon2';
@@ -8,13 +17,20 @@ import { ProductsService } from '../products/products.service';
 
 @Injectable()
 export class UsersService extends CommonService<UserDocument, UserExecutor> {
-
-  constructor(executor: UserExecutor, private productsService: ProductsService) {
+  constructor(
+    executor: UserExecutor,
+    private productsService: ProductsService,
+  ) {
     super(executor);
-  };
+  }
 
   createUser(dto: CreateUserDto) {
-    return this.create<Omit<User, 'id'>>({ ...dto, basket: [], favorites: [], role: UserRole.USER});
+    return this.create<Omit<User, 'id'>>({
+      ...dto,
+      basket: [],
+      favorites: [],
+      role: UserRole.USER,
+    });
   }
 
   async getUser(id: string) {
@@ -35,7 +51,11 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
     if (!user) throw new NotFoundException('User not found');
     const product = await this.productsService.findOneById(productId);
     if (!product) throw new NotFoundException('Product not found');
-    const isExist = user.favorites.some(item => item.id === productId);
-    return user.updateOne({ [isExist ? '$pullAll' : '$push']: { favorites: [productId] } }).exec();
+    const isExist = user.favorites.some((item) => item.id === productId);
+    return user
+      .updateOne({
+        [isExist ? '$pullAll' : '$push']: { favorites: [productId] },
+      })
+      .exec();
   }
 }

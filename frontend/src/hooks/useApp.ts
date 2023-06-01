@@ -1,10 +1,10 @@
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
-import { RootState } from 'store';
-import { cartSlice } from 'store/slices';
+import { RootState, authSlice, cartSlice } from 'store';
 import { bindActionCreators } from '@reduxjs/toolkit';
 
 const actions = {
     ...cartSlice.actions,
+    ...authSlice.actions,
 };
 
 export const useAppActions = () => {

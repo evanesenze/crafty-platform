@@ -1,8 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { InputProps, Layout } from 'antd';
+import { Input, InputProps, Layout } from 'antd';
 import style from './PageLayout.style.module.css';
-import { HeaderControls, Input, Logo, CategoriesButton, CategoriesList } from 'components';
+import { HeaderControls, Logo, CategoriesButton, CategoriesList } from 'components';
 
 const { Header, Content } = Layout;
 
@@ -16,7 +16,7 @@ export const PageLayout: React.FC = () => {
         <Layout className={style.layout}>
             <Header className={style.layout__header}>
                 <Logo className={style.layout_header__logo} />
-                <Input props={inputProps} />
+                <Input {...inputProps} />
                 <HeaderControls className={style.layout_header__controls} />
                 <CategoriesButton className={style.layout_header__categories_button} />
                 <CategoriesList className={style.layout_header__categories_list} />

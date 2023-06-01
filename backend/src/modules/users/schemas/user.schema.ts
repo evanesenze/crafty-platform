@@ -11,12 +11,11 @@ export type UserDocument = HydratedDocument<User>;
 
 export enum UserRole {
   USER = 'USER',
-  ADMIN = 'ADMIN'
+  ADMIN = 'ADMIN',
 }
 
 @Schema()
 export class User extends CommonSchema {
-
   @Prop({ enum: UserRole, default: UserRole.USER })
   @IsEnum(UserRole)
   role: UserRole;
@@ -49,10 +48,6 @@ export class User extends CommonSchema {
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Product' }] })
   favorites: Product[];
 }
-
-// @ApiProperty()
-// @Prop()
-// wallet: string;
 
 export const UserSchema = SchemaFactory.createForClass(User);
 

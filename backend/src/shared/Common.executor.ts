@@ -9,7 +9,7 @@ import {
   isValidObjectId,
 } from 'mongoose';
 
-interface IExecutorSearch {
+export interface IExecutorSearch {
   query?: string;
   sort?: Record<string, 1 | -1>;
   skip?: number;
@@ -18,30 +18,30 @@ interface IExecutorSearch {
 
 const getSearchPipeline = (query: string): PipelineStage => ({
   $search: {
-    index: "ProductsIndex",
+    index: 'ProductsIndex',
     text: {
       query,
       path: {
-        wildcard: "*"
-      }
-    }
-  }
+        wildcard: '*',
+      },
+    },
+  },
 });
 
 const getSortPipeline = (sort: Record<string, 1 | -1>): PipelineStage => ({
-  $sort: sort
+  $sort: sort,
 });
 
 const getLimitPipeline = (limit: number): PipelineStage => ({
-  $limit: limit
+  $limit: limit,
 });
 
 const getSkipPipeline = (skip: number): PipelineStage => ({
-  $skip: skip
+  $skip: skip,
 });
 
 export abstract class CommonExecutor<T extends Document> {
-  constructor(protected readonly model: Model<T>) { }
+  constructor(protected readonly model: Model<T>) {}
 
   async search({ query, sort, limit, skip }: IExecutorSearch) {
     const stage: PipelineStage[] = [];
@@ -56,12 +56,11 @@ export abstract class CommonExecutor<T extends Document> {
     entityFilterQuery: FilterQuery<T>,
     projection?: Record<string, unknown>,
   ) {
-    return this.model
-      .findOne(entityFilterQuery, {
-        _id: 0,
-        __v: 0,
-        ...projection,
-      });
+    return this.model.findOne(entityFilterQuery, {
+      _id: 0,
+      __v: 0,
+      ...projection,
+    });
   }
 
   findById(id: string, projection?: ProjectionType<T>) {
@@ -82,19 +81,12 @@ export abstract class CommonExecutor<T extends Document> {
     updateEntityData: UpdateQuery<unknown>,
   ) {
     await this.checkExisting(entityFilterQuery);
-    return this.model.findOneAndUpdate(
-      entityFilterQuery,
-      updateEntityData,
-      {
-        new: true,
-      },
-    );
+    return this.model.findOneAndUpdate(entityFilterQuery, updateEntityData, {
+      new: true,
+    });
   }
 
-  async findByIdAndUpdate(
-    id: string,
-    updateEntityData: UpdateQuery<T>,
-  ) {
+  async findByIdAndUpdate(id: string, updateEntityData: UpdateQuery<T>) {
     if (!isValidObjectId(id)) throw new ForbiddenException('Wrong id');
     await this.checkExisting({ _id: id });
     return this.model.findByIdAndUpdate(id, updateEntityData, {
@@ -110,9 +102,7 @@ export abstract class CommonExecutor<T extends Document> {
 
   async findOneAndDelete(entityFilterQuery: FilterQuery<T>) {
     await this.checkExisting(entityFilterQuery);
-    return this.model.findByIdAndRemove(
-      entityFilterQuery,
-    );
+    return this.model.findByIdAndRemove(entityFilterQuery);
   }
 
   async deleteMany(entityFilterQuery: FilterQuery<T> = {}) {

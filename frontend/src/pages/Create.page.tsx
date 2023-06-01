@@ -1,5 +1,5 @@
-import { Button, Col, ConfigProvider, Form, Row, Typography } from 'antd';
-import { AutoComplete, Input, NumberInput } from 'components';
+import { Button, Col, ConfigProvider, Form, Input, Row, Typography } from 'antd';
+import { AutoComplete, NumberInput } from 'components';
 import React from 'react';
 import { PicturesWall } from 'widgets';
 
@@ -33,7 +33,7 @@ export const Create: React.FC = () => {
                             </Row>
                         </Form.Item>
                         <Form.Item label="Описание">
-                            <Input type="textArea" props={{ rows: 4 }} />
+                            <Input.TextArea rows={4} />
                         </Form.Item>
                     </Col>
                     <Col offset={4} span={12}>

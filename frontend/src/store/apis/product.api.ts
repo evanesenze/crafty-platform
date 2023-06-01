@@ -1,17 +1,39 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
 
+export type Category = {
+    name: string;
+    slug: string;
+    id: string;
+};
+
+export type Product = {
+    category: Category;
+    description: string;
+    images: string[];
+    name: string;
+    price: number;
+    slug: string;
+    id: string;
+};
+
+export type CommonQueries = {};
+
+export type GetProductsQueries = CommonQueries & {
+    ownerId?: string;
+};
+
 export const productApi = createApi({
     reducerPath: 'product/api',
     baseQuery: getBaseQuery('products'),
     endpoints: ({ mutation, query }) => ({
-        getProducts: query<any, any>({
+        getProducts: query<Product[], GetProductsQueries>({
             query: (params) => ({
                 url: '',
                 params,
             }),
         }),
-        getProduct: query<any, any>({
+        getProduct: query<Product, any>({
             query: (id) => id,
         }),
         createProduct: mutation<any, any>({
