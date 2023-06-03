@@ -21,6 +21,8 @@ export type CommonQueries = {};
 
 export type GetProductsQueries = CommonQueries & {
     ownerId?: string;
+    categoryId?: string;
+    q?: string;
 };
 
 export const productApi = createApi({
@@ -28,13 +30,22 @@ export const productApi = createApi({
     baseQuery: getBaseQuery('products'),
     endpoints: ({ mutation, query }) => ({
         getProducts: query<Product[], GetProductsQueries>({
-            query: (params) => ({
-                url: '',
-                params,
-            }),
+            query: (params) => {
+                console.log('params', params);
+                return {
+                    url: '',
+                    params,
+                };
+            },
         }),
-        getProduct: query<Product, any>({
+        getProduct: query<Product, string>({
             query: (id) => id,
+        }),
+        getRecommendations: query<Product[], void>({
+            query: () => 'recommendations',
+        }),
+        getProductBySlug: query<Product, string>({
+            query: (slug) => `with-slug/${slug}`,
         }),
         createProduct: mutation<any, any>({
             query: (body) => ({
@@ -59,4 +70,12 @@ export const productApi = createApi({
     }),
 });
 
-export const { useGetProductQuery, useGetProductsQuery, useCreateProductMutation, useUpdateProductMutation, useDeleteProductMutation } = productApi;
+export const {
+    useGetProductQuery,
+    useGetProductBySlugQuery,
+    useGetProductsQuery,
+    useGetRecommendationsQuery,
+    useCreateProductMutation,
+    useUpdateProductMutation,
+    useDeleteProductMutation,
+} = productApi;

@@ -5,8 +5,8 @@
 }
 
 .product_card:hover > .product_card__image {
-    background-size: 100%;
-    filter: grayscale(0);
+    background-size: 100% !important;
+    filter: grayscale(0) !important;
 }
 
 .product_card:hover > .product_card__text {
@@ -15,14 +15,15 @@
 
 .product_card__image {
     width: 100%;
+    height: unset !important;
     border-radius: 6px;
     border: 1px solid black;
-    background-size: 110%;
+    background-size: 110% !important;
     background-position: center;
     background-repeat: no-repeat;
     aspect-ratio: 4/3;
     transition: background-size 0.5s ease, filter 0.5s ease;
-    filter: grayscale(0.75);
+    filter: grayscale(0.75) !important;
 }
 
 .product_card__title {

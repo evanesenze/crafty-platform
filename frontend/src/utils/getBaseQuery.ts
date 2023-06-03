@@ -10,6 +10,11 @@ const prepareHeaders: FetchBaseQueryArgs['prepareHeaders'] = (headers, { getStat
     return headers;
 };
 
-const responseHandler: ResponseHandler = async () => {};
+const responseHandler: ResponseHandler = async (response) => {
+    if (response.status === 401) {
+        console.log(response);
+    }
+    return response.json();
+};
 
 export const getBaseQuery = (url?: string) => fetchBaseQuery({ baseUrl: SERVER_URL + (url ? url + '/' : ''), prepareHeaders });

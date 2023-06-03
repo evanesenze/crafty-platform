@@ -14,7 +14,7 @@
     display: grid;
     grid-template-areas:
         'a b c'
-        'd e e';
+        'd d d';
     grid-template-columns: auto 1fr auto;
     grid-template-rows: 55px auto;
     gap: 25px 50px;
@@ -34,12 +34,8 @@
     grid-area: c;
 }
 
-.layout_header__categories_button {
-    grid-area: d;
-}
-
 .layout_header__categories_list {
-    grid-area: e;
+    grid-area: d;
 }
 
 .layout__content {

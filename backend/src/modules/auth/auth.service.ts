@@ -73,7 +73,6 @@ export class AuthService {
   }
 
   private returnUserFields(user: User) {
-    console.log(user);
     return {
       id: user.id,
       email: user.email,
@@ -82,7 +81,6 @@ export class AuthService {
 
   private async validateUser({ email, password }: AuthDto) {
     const user = (await this.usersService.findOneById(userId)).toJSON();
-    console.log('user', user);
     if (!user) throw new NotFoundException('User not found');
     const isValid = await verify(user.password, password);
     if (!isValid) throw new UnauthorizedException('Invalid password');

@@ -1,35 +1,9 @@
 import { MenuOutlined } from '@ant-design/icons';
-import { Dropdown, MenuProps, Space } from 'antd';
-import React from 'react';
+import { Divider, Drawer, Input, Row } from 'antd';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import style from './CategoriesButton.style.module.css';
-
-const items: MenuProps['items'] = [
-    {
-        key: '1',
-        label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                1st menu item
-            </a>
-        ),
-    },
-    {
-        key: '2',
-        label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-                2nd menu item
-            </a>
-        ),
-    },
-    {
-        key: '3',
-        label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-                3rd menu item
-            </a>
-        ),
-    },
-];
+import { CategoriesList } from '../CategoriesList';
 
 export type CategoriesButtonProps = {
     className?: string;
@@ -37,12 +11,19 @@ export type CategoriesButtonProps = {
 
 export const CategoriesButton: React.FC<CategoriesButtonProps> = (props) => {
     const className = cn(style.categories_button, props.className);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [search, setSearch] = useState('');
+
+    const onClose = () => setDrawerOpen(false);
+
     return (
-        <Dropdown className={className} menu={{ items, className: style.categories_button__list }} placement="bottomLeft">
-            <Space>
-                <MenuOutlined />
-                <span>Категории</span>
-            </Space>
-        </Dropdown>
+        <Row align="middle" style={{ height: '100%' }}>
+            <MenuOutlined className={className} onClick={() => setDrawerOpen((x) => !x)} />
+            <Drawer title="Все категории" placement="left" onClose={onClose} closable={false} open={drawerOpen}>
+                <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Украшения" />
+                <Divider />
+                <CategoriesList mode="vertical" onSelect={onClose} search={search} />
+            </Drawer>
+        </Row>
     );
 };

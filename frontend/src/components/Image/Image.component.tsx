@@ -12,6 +12,7 @@ export const Image: React.FC<ImageProps> = ({ src, height = 100, className }) =>
             className={className}
             style={{
                 backgroundImage: `url(${src})`,
+                backgroundColor: 'lightgray',
                 height,
                 aspectRatio: '6/5',
                 backgroundPosition: 'center',

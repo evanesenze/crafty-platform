@@ -1,17 +1,32 @@
 import { OrderItemsService } from './services/orderItems.service';
 import { PaginationService } from '../pagination/pagination.service';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  Query,
+} from '@nestjs/common';
 import { OrdersService } from './services/orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto, UpdateOrderItemDto } from './dto/update-order.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetAllProductDto } from '../products/dto/get-all-product.dto';
 import { Auth } from '../auth/decortators/auth.decorator';
 
 @ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
-  constructor(private ordersService: OrdersService, private orderItemsService: OrderItemsService, private paginationService: PaginationService) { }
+  constructor(
+    private ordersService: OrdersService,
+    private orderItemsService: OrderItemsService,
+    private paginationService: PaginationService,
+  ) {}
 
   @UsePipes(new ValidationPipe())
   @Auth()
@@ -21,9 +36,13 @@ export class OrdersController {
   }
 
   @Get()
-  findAll(dto: GetAllProductDto = {}) {
-    const { searchTerm, sort } = dto;
-    return this.ordersService.findAll();
+  @ApiQuery({ name: 'buyerId', required: false, type: 'string' })
+  findAll(@Query('buyerId') buyerId: string) {
+    return this.ordersService.findAll({ buyer: buyerId }, [
+      'items',
+      'buyer',
+      'seller',
+    ]);
   }
 
   @Get(':id')
@@ -46,21 +65,31 @@ export class OrdersController {
   }
 
   @Get(':orderId/items/:itemId')
-  findOneItem(@Param('orderId') orderId: string, @Param('itemId') itemId: string) {
+  findOneItem(
+    @Param('orderId') orderId: string,
+    @Param('itemId') itemId: string,
+  ) {
     return this.orderItemsService.findOneById('');
   }
 
   @UsePipes(new ValidationPipe())
   @Auth()
   @Patch(':orderId/items/:itemId')
-  updateItem(@Param('orderId') orderId: string, @Param('itemId') itemId: string, @Body() updateOrderDto: UpdateOrderItemDto) {
+  updateItem(
+    @Param('orderId') orderId: string,
+    @Param('itemId') itemId: string,
+    @Body() updateOrderDto: UpdateOrderItemDto,
+  ) {
     return this.orderItemsService.updateItem('', updateOrderDto);
   }
 
   @UsePipes(new ValidationPipe())
   @Auth()
   @Delete(':orderId/items/:itemId')
-  removeItem(@Param('orderId') orderId: string, @Param('itemId') itemId: string) {
+  removeItem(
+    @Param('orderId') orderId: string,
+    @Param('itemId') itemId: string,
+  ) {
     return this.orderItemsService.remove('');
   }
 }

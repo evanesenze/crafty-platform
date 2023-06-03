@@ -1,5 +1,5 @@
 .categories_button {
-    font-size: 24px;
+    font-size: 24px !important;
     font-weight: 500;
     user-select: none;
     cursor: pointer;

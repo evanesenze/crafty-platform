@@ -6,15 +6,23 @@ import { CommonService } from 'src/shared/Common.service';
 import { ProductDocument, ProductExecutor } from './schemas/product.schema';
 import { getSlug } from 'src/shared/extra';
 
+const recommendationsCount = 5;
+
 @Injectable()
-export class ProductsService extends CommonService<ProductDocument, ProductExecutor> {
-  constructor(executor: ProductExecutor, private categoriesService: CategoriesService) {
+export class ProductsService extends CommonService<
+  ProductDocument,
+  ProductExecutor
+> {
+  constructor(
+    executor: ProductExecutor,
+    private categoriesService: CategoriesService,
+  ) {
     super(executor);
-  };
+  }
 
   async createProduct(dto: CreateProductDto) {
     const slug = await this.getProductSlug(dto.name);
-    this.categoriesService.findOneById(dto.category)
+    this.categoriesService.findOneById(dto.category);
     return this.create({ ...dto, slug });
   }
 
@@ -35,5 +43,12 @@ export class ProductsService extends CommonService<ProductDocument, ProductExecu
     return slug;
   }
 
-
+  async getRecommendations() {
+    const products = await this.findAll({}, 'category');
+    const offset = Math.min(
+      Math.round(Math.random() * products.length),
+      products.length - recommendationsCount,
+    );
+    return products.slice(offset, offset + recommendationsCount);
+  }
 }

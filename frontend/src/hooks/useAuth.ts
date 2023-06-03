@@ -25,7 +25,7 @@ export const useAuth = () => {
         const refreshExpires = new Date();
         refreshExpires.setDate(refreshExpires.getDate() + 7);
         const accessExpires = new Date();
-        accessExpires.setMinutes(accessExpires.getMinutes() + 20);
+        accessExpires.setHours(accessExpires.getHours() + 1);
         setCookie(accessTokenName, accessToken, { path: '/', expires: accessExpires });
         setCookie(refreshTokenName, refreshToken, { path: '/', expires: refreshExpires });
         return authByCredentials(creds);
@@ -40,7 +40,7 @@ export const useAuth = () => {
             case 'login':
                 msg += ' при входе';
                 break;
-            case 'login':
+            case 'refetch':
                 msg += ' при обновлении';
                 break;
         }

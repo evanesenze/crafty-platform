@@ -1,18 +1,27 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
 
+export type Category = {
+    id: string;
+    name: string;
+    slug: string;
+};
+
 export const categoryApi = createApi({
     reducerPath: 'category/api',
     baseQuery: getBaseQuery('categories'),
     endpoints: ({ mutation, query }) => ({
-        getCategories: query<any, any>({
+        getCategories: query<Category[], any>({
             query: (params) => ({
                 url: '',
                 params,
             }),
         }),
-        getCategory: query<any, any>({
+        getCategory: query<Category, any>({
             query: (id) => id,
+        }),
+        getCategoryBySlug: query<Category, string>({
+            query: (slug) => `with-slug/${slug}`,
         }),
         createCategory: mutation<any, any>({
             query: (body) => ({
@@ -37,5 +46,11 @@ export const categoryApi = createApi({
     }),
 });
 
-export const { useGetCategoryQuery, useGetCategoriesQuery, useCreateCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation } =
-    categoryApi;
+export const {
+    useGetCategoryQuery,
+    useGetCategoryBySlugQuery,
+    useGetCategoriesQuery,
+    useCreateCategoryMutation,
+    useUpdateCategoryMutation,
+    useDeleteCategoryMutation,
+} = categoryApi;

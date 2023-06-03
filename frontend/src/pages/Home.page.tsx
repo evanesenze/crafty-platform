@@ -1,7 +1,8 @@
 import { AdsBlock } from 'components';
 import React from 'react';
 import ad1 from '../assets/ad_1.png';
-import { ProductsBlock } from 'widgets';
+import { ProductsWall } from 'widgets';
+import { useGetRecommendationsQuery } from 'store/apis';
 
 const images = [
     {
@@ -15,10 +16,11 @@ const images = [
 ];
 
 export const Home: React.FC = () => {
+    const { data: products } = useGetRecommendationsQuery();
     return (
         <React.Fragment>
             <AdsBlock containerStyle={{ height: 490, margin: '0 -70px' }} images={images} />
-            <ProductsBlock title="Рекомендуем для вас" />
+            <ProductsWall products={products} column={5} title="Рекомендуем для вас" />
         </React.Fragment>
     );
 };

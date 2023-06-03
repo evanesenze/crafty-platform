@@ -1,8 +1,16 @@
 .categories_list {
-    margin-right: -70px;
     font-size: 24px;
-    white-space: nowrap;
     user-select: none;
+}
+
+.categories_list__horizontal {
+    white-space: nowrap;
+    margin: 0 -70px;
+    padding-left: 70px;
+}
+
+.categories_list > li[role='none'] {
+    display: none;
 }
 
 .categories_list__item {

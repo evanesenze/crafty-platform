@@ -1,41 +1,63 @@
-import { Col, Row, Space, Typography } from 'antd';
+import { Col, List, Row, Space, Typography } from 'antd';
 import { ProductCard } from 'components';
 import React from 'react';
+import { Order, Product, useGetOrderQuery, useGetProductsQuery, useGetProfileQuery } from 'store';
+import { getPrice } from 'utils';
 
 const { Text } = Typography;
-const url = 'https://detskiy-sad.com/wp-content/uploads/2016/09/kartinki-na-shkafchiki-s-igrushkami-22.jpg';
-const price = 10000;
 
 export type ProductsWallProps = {
-    count: number;
-    isCategory?: boolean;
-    isOrder?: boolean;
+    products?: Product[];
+    order?: Order;
+    column?: number;
+    title?: string;
 };
 
-export const ProductsWall: React.FC<ProductsWallProps> = ({ count, isCategory, isOrder }) => {
+export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, column = 6, title }) => {
+    const isOrder = !!order;
+    const isCategory = !!products;
+    const orderPrice = order?.items?.reduce((acc, item) => acc + item.price, 0);
+
     return (
         <React.Fragment>
-            <Row justify="space-between">
+            <Row style={{ marginBottom: 20 }} justify="space-between">
                 <Col>
-                    {isOrder && <Text style={{ fontSize: 24 }}>Заказ № 2344831</Text>}
-                    {isCategory && <Text style={{ fontSize: 24 }}>Укарашения</Text>}
+                    {title && <Text style={{ fontSize: 24 }}>{title}</Text>}
+                    {/* {isOrder && <Text style={{ fontSize: 24 }}>Заказ № 2344831</Text>} */}
+                    {/* {isCategory && <Text style={{ fontSize: 24 }}>Украшения</Text>} */}
                 </Col>
                 <Col>{isOrder && <Text>В пути</Text>}</Col>
             </Row>
             {isOrder && (
-                <Row>
-                    <Col>
-                        <Text strong style={{ fontSize: 24 }}>
-                            44 000 ₽
-                        </Text>
-                    </Col>
-                </Row>
+                <React.Fragment>
+                    <Row>
+                        <Col>
+                            <Text strong style={{ fontSize: 24 }}>
+                                {orderPrice && getPrice({ value: orderPrice })}
+                            </Text>
+                        </Col>
+                    </Row>
+                    <List
+                        dataSource={order.items}
+                        renderItem={(item) => (
+                            <List.Item key={item.id}>
+                                <ProductCard {...item.product} price={item.price} />
+                            </List.Item>
+                        )}
+                    />
+                </React.Fragment>
             )}
-            <Row style={{ overflowY: 'hidden', overflowX: 'auto', margin: '20px -70px 0', padding: '0 70px' }}>
-                <Space size={45}>
-                    {new Array(count).fill(<ProductCard id="product-slug" url={url} price={price} text="Набор столовых приборов" />)}
-                </Space>
-            </Row>
+            {isCategory && (
+                <List
+                    grid={{ column, gutter: 20 }}
+                    dataSource={products}
+                    renderItem={(item) => (
+                        <List.Item key={item.id}>
+                            <ProductCard {...item} />
+                        </List.Item>
+                    )}
+                />
+            )}
         </React.Fragment>
     );
 };

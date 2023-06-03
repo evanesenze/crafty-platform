@@ -35,20 +35,23 @@ const createProducts = async (quantity: number) => {
     const categorySlug = getSlug(categoryName);
 
     const existCategory = await Category.findOne({ slug: categorySlug }).exec();
-    const category = existCategory ?? new Category({
-      name: categoryName,
-      slug: getSlug(categoryName)
-    });
-    if (!existCategory)
-      await category.save();
+    const category =
+      existCategory ??
+      new Category({
+        name: categoryName,
+        slug: getSlug(categoryName),
+      });
+    if (!existCategory) await category.save();
 
     const product = new Product({
       name: productName,
       slug: getSlug(productName),
       description: faker.commerce.productDescription(),
-      price: faker.commerce.price(500, 100000),
-      images: Array.from({ length: faker.datatype.number({ min: 2, max: 6 }) }).fill(null).map(() => faker.image.imageUrl(500, 500)),
-      category: category._id
+      price: faker.commerce.price(500, 10000),
+      images: Array.from({ length: faker.datatype.number({ min: 2, max: 6 }) })
+        .fill(null)
+        .map(() => faker.image.imageUrl(500, 500, categoryName, true)),
+      category: category._id,
     });
 
     await product.save();
@@ -62,11 +65,11 @@ const createProducts = async (quantity: number) => {
 const main = async () => {
   console.log('Start seeding...');
   await createProducts(10);
-}
+};
 
 main()
   .catch(console.error)
   .finally(() => {
     console.log('Seeding end');
     disconnect();
-  }); 
+  });

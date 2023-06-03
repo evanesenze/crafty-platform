@@ -3,50 +3,58 @@ import { clientRoutes } from '../utils/config';
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { Image } from 'components';
-import { HeartOutlined, LikeOutlined } from '@ant-design/icons';
+import { HeartOutlined } from '@ant-design/icons';
 import { Comment, Rating } from 'widgets';
+import { useGetProductQuery, useGetReviewsQuery, useToggleFavoriteMutation } from 'store';
+import { getPrice } from 'utils';
 
 export type ProductParams = 'id';
 
-const url = 'https://mobimg.b-cdn.net/v3/fetch/db/db6e862725f8e449427d1de5b2be0835.jpeg';
 const { Title, Text, Paragraph } = Typography;
 
 export const Product: React.FC = () => {
     const { id } = useParams<ProductParams>();
-    if (!id) return <Navigate to={clientRoutes[404]} />;
-    return (
+
+    const { data: product, isSuccess, refetch, isFetching: isProductFetching } = useGetProductQuery(String(id));
+    const { data: reviews, isFetching: isReviewsFetching } = useGetReviewsQuery({ productId: String(id) });
+    const [toggleFavorite] = useToggleFavoriteMutation();
+
+    // const rating = reviews?.length ? reviews.reduce((acc, item) => acc + item.rating, 0) / reviews.length : 0;
+
+    const toggle = () => {
+        product &&
+            toggleFavorite(product.id)
+                .unwrap()
+                .then(() => {
+                    refetch();
+                })
+                .catch(console.log);
+    };
+
+    // if (!isSuccess && !isProductFetching) return <Navigate to={clientRoutes[404]} />;
+    return isSuccess ? (
         <React.Fragment>
             <Row style={{ height: 300 }} wrap={false}>
                 <Col>
-                    <Image src={url} height="300px" />
+                    <Image src={product.images[0]} height="300px" />
                 </Col>
                 <Col offset={2} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <Row>
                         <Col>
-                            <Title>Глиняная ваза</Title>
-                            <Row>
-                                <Rating value={5} disabled />
-                            </Row>
+                            <Title>{product.name}</Title>
+                            {/* <Row>{!!rating && <Rating value={rating} disabled />}</Row> */}
                             <Row>
                                 <Text style={{ fontSize: 14, color: 'gray' }}>Мастер Анастасия</Text>
                             </Row>
                             <Row>
-                                <Paragraph ellipsis={{ rows: 4 }}>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, reiciendis consequatur? Asperiores esse quisquam
-                                    vel, amet molestiae accusantium debitis vitae veniam vero placeat. Nam, aliquam quisquam perspiciatis distinctio
-                                    quaerat quas. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus sint voluptas, dicta, dolores
-                                    ullam quasi atque deserunt possimus sed adipisci et necessitatibus corrupti culpa sequi! Voluptatem amet placeat
-                                    voluptates repellat. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad placeat earum sequi sunt. Nostrum
-                                    sunt similique itaque veritatis dolore quibusdam explicabo. Eos, nihil? Autem ullam nobis molestiae debitis
-                                    reiciendis a!
-                                </Paragraph>
+                                <Paragraph ellipsis={{ rows: 4 }}>{product.description}</Paragraph>
                             </Row>
                         </Col>
                     </Row>
-                    <Row align="top">
+                    <Row align="top" style={{ top: 16, position: 'relative' }}>
                         <Col>
                             <Text strong style={{ fontSize: 32, lineHeight: '32px' }}>
-                                32 500 ₽
+                                {getPrice({ value: product.price })}
                             </Text>
                         </Col>
                         <Col offset={1}>
@@ -64,7 +72,7 @@ export const Product: React.FC = () => {
                                     </Row>
                                 </Col>
                                 <Col>
-                                    <HeartOutlined style={{ fontSize: 36 }} />
+                                    <HeartOutlined onClick={toggle} style={{ fontSize: 36 }} />
                                 </Col>
                             </Space>
                         </Col>
@@ -75,14 +83,16 @@ export const Product: React.FC = () => {
                 Отзывы
             </Title>
             <List
+                locale={{ emptyText: 'Отзывов еще нет =(' }}
                 grid={{ gutter: [40, 30] as any, column: 2 }}
-                dataSource={[1, 2, 3, 4, 5, 6]}
-                renderItem={(item, index) => (
-                    <List.Item>
-                        <Comment />
+                dataSource={reviews}
+                loading={isReviewsFetching}
+                renderItem={(item) => (
+                    <List.Item key={item.id}>
+                        <Comment {...item} />
                     </List.Item>
                 )}
             />
         </React.Fragment>
-    );
+    ) : null;
 };

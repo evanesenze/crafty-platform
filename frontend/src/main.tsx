@@ -33,32 +33,34 @@ const router = createBrowserRouter([
                 element: <Cart />,
             },
             {
-                path: clientRoutes.profile,
-                element: (
-                    <AuthProvider>
-                        <Profile />
-                    </AuthProvider>
-                ),
-            },
-            {
-                path: clientRoutes.create,
-                element: <Create />,
-            },
-            {
-                path: clientRoutes.orders,
-                element: <Orders />,
-            },
-            {
-                path: clientRoutes.favorites,
-                element: <Favorites />,
-            },
-            {
                 path: clientRoutes.products,
                 element: <Products />,
             },
             {
                 path: clientRoutes.product,
                 element: <Product />,
+            },
+            {
+                path: '/',
+                element: <AuthProvider isOutlet redirectUnAuth={clientRoutes.auth} />,
+                children: [
+                    {
+                        path: clientRoutes.profile,
+                        element: <Profile />,
+                    },
+                    {
+                        path: clientRoutes.create,
+                        element: <Create />,
+                    },
+                    {
+                        path: clientRoutes.orders,
+                        element: <Orders />,
+                    },
+                    {
+                        path: clientRoutes.favorites,
+                        element: <Favorites />,
+                    },
+                ],
             },
             {
                 path: clientRoutes[404],
