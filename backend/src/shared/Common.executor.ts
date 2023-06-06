@@ -43,24 +43,21 @@ const getSkipPipeline = (skip: number): PipelineStage => ({
 export abstract class CommonExecutor<T extends Document> {
   constructor(protected readonly model: Model<T>) {}
 
-  async search({ query, sort, limit, skip }: IExecutorSearch) {
+  async search(search: IExecutorSearch) {
+    const { query, sort, limit, skip } = search;
     const stage: PipelineStage[] = [];
     if (query) stage.push(getSearchPipeline(query));
     if (sort) stage.push(getSortPipeline(sort));
     if (skip) stage.push(getSkipPipeline(skip));
     if (limit) stage.push(getLimitPipeline(limit));
-    return await this.model.aggregate<T>(stage).exec();
+    stage.push({
+      $addFields: { id: '$_id' },
+    });
+    return this.model.aggregate<T>(stage).exec();
   }
 
-  findOne(
-    entityFilterQuery: FilterQuery<T>,
-    projection?: Record<string, unknown>,
-  ) {
-    return this.model.findOne(entityFilterQuery, {
-      _id: 0,
-      __v: 0,
-      ...projection,
-    });
+  findOne(entityFilterQuery: FilterQuery<T>, projection?: ProjectionType<T>) {
+    return this.model.findOne(entityFilterQuery, projection);
   }
 
   findById(id: string, projection?: ProjectionType<T>) {

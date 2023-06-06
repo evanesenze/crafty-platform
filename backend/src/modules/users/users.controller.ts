@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, Patch, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Auth } from '../auth/decortators/auth.decorator';
@@ -27,5 +27,17 @@ export class UsersController {
   @Post('profile/favorites/:productId')
   toggleFavorites(@Param('productId') productId: string, @CurrentUser('id') userId: string) {
     return this.usersService.toggleFavorites(userId, productId);
+  }
+
+  @Auth()
+  @Post('profile/basket/:productId')
+  addToBasket(@Param('productId') productId: string, @CurrentUser('id') userId: string) {
+    return this.usersService.addToBasket(userId, productId);
+  }
+
+  @Auth()
+  @Delete('profile/basket/:itemId')
+  deleteFromBasket(@Param('itemId') itemId: string, @CurrentUser('id') userId: string) {
+    return this.usersService.deleteFromBasket(userId, itemId);
   }
 }

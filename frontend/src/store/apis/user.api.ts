@@ -1,12 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
 import { Product } from './product.api';
+import { OrderItem } from './order.api';
 
 export type UserProfile = {
     role: string;
     name: string;
     email: string;
-    basket: any[];
+    basket: OrderItem[];
     phone: string;
     avatar: string;
     favorites: Product[];
@@ -25,6 +26,20 @@ export const userApi = createApi({
             }),
             invalidatesTags: ['Profile'],
         }),
+        addToBasket: mutation<void, string>({
+            query: (id) => ({
+                method: 'POST',
+                url: `profile/basket/${id}`,
+            }),
+            invalidatesTags: ['Profile'],
+        }),
+        deleteFromBasket: mutation<void, string>({
+            query: (id) => ({
+                method: 'DELETE',
+                url: `profile/basket/${id}`,
+            }),
+            invalidatesTags: ['Profile'],
+        }),
         getProfile: query<UserProfile, void>({
             query: () => 'profile',
             providesTags: ['Profile'],
@@ -39,4 +54,5 @@ export const userApi = createApi({
     }),
 });
 
-export const { useGetProfileQuery, useToggleFavoriteMutation, useUpdateProfileMutation } = userApi;
+export const { useGetProfileQuery, useDeleteFromBasketMutation, useAddToBasketMutation, useToggleFavoriteMutation, useUpdateProfileMutation } =
+    userApi;

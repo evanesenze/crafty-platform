@@ -1,8 +1,8 @@
 import { Col, Divider, List, Rate, Row, Space, Typography } from 'antd';
-import { CartItemContainer, Image } from 'components';
+import { CartItemContainer, Image, Link } from 'components';
 import React from 'react';
 import { useGetProductsQuery, useGetProfileQuery } from 'store';
-import { AuthProvider, Rating } from 'widgets';
+import { Rating } from 'widgets';
 
 const { Text } = Typography;
 
@@ -28,35 +28,42 @@ export const Profile: React.FC = () => {
                             </Text>
                         </Row>
                         <Row>
-                            <Text strong style={{ fontSize: 14, color: 'gray' }}>
-                                Изменить профиль
-                            </Text>
-                            <Rating value={4.99} disabled />
-                            <Text strong>26 отзывов</Text>
+                            <Col>
+                                <Row>
+                                    <Text strong style={{ fontSize: 14, color: 'gray' }}>
+                                        Изменить профиль
+                                    </Text>
+                                </Row>
+                                <Row>
+                                    <Rating value={4.99} disabled />
+                                </Row>
+                                <Row>
+                                    <Text strong>26 отзывов</Text>
+                                </Row>
+                            </Col>
                         </Row>
                     </Col>
                 </Row>
-                <Space size={16} direction="vertical">
-                    <Text strong>Личная информация</Text>
-                    <Text>Баланс средств</Text>
-                    <Text>Сохраненные карты </Text>
-                    <Text>Мои данные</Text>
-                    <Text>Защита профиля</Text>
-                </Space>
-                <Divider />
-                <Space size={16} direction="vertical">
-                    <Text strong>Заказы</Text>
-                    <Text>Моя корзина</Text>
-                    <Text>Мои заказы</Text>
-                    <Text>Мои возвраты</Text>
-                    <Text>Купленные товары</Text>
-                    <Text>Электронные чеки</Text>
-                </Space>
-                <Divider />
-                <Space size={16} direction="vertical">
-                    <Text strong>Магазин</Text>
-                    <Text>Мои товары</Text>
-                </Space>
+                <Row>
+                    <Col>
+                        <Space size={16} direction="vertical">
+                            <Text strong>Личная информация</Text>
+                            <Link to="">Баланс средств</Link>
+                            <Text>Сохраненные карты </Text>
+                            <Text>Мои данные</Text>
+                            <Text>Защита профиля</Text>
+                        </Space>
+                        <Divider />
+                        <Space size={16} direction="vertical">
+                            <Text strong>Заказы</Text>
+                            <Text>Моя корзина</Text>
+                            <Text>Мои заказы</Text>
+                            <Text>Мои возвраты</Text>
+                            <Text>Купленные товары</Text>
+                            <Text>Электронные чеки</Text>
+                        </Space>
+                    </Col>
+                </Row>
             </Col>
             <Col
                 offset={1}

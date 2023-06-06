@@ -14,12 +14,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { hash } from 'argon2';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ProductsService } from '../products/products.service';
+import { OrderItemsService } from '../orders/services/orderItems.service';
 
 @Injectable()
 export class UsersService extends CommonService<UserDocument, UserExecutor> {
   constructor(
     executor: UserExecutor,
     private productsService: ProductsService,
+    private orderItemsService: OrderItemsService,
   ) {
     super(executor);
   }
@@ -34,7 +36,10 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
   }
 
   async getUser(id: string) {
-    const user = await this.findOneById(id, 'favorites');
+    const user = await this.findOneById(id)
+      .populate({ path: 'favorites', populate: 'category' })
+      .populate({ path: 'basket', populate: 'product' })
+      .exec();
     const { password, ...res } = user.toJSON();
     return res;
   }
@@ -47,15 +52,30 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
   }
 
   async toggleFavorites(userId: string, productId: string) {
-    const user = await this.findOneById(userId, 'favorites');
-    if (!user) throw new NotFoundException('User not found');
-    const product = await this.productsService.findOneById(productId);
-    if (!product) throw new NotFoundException('Product not found');
+    const user = await this.findOneById(userId);
+    await this.productsService.findOneById(productId);
     const isExist = user.favorites.some((item) => item.id === productId);
     return user
       .updateOne({
         [isExist ? '$pullAll' : '$push']: { favorites: [productId] },
       })
       .exec();
+  }
+
+  async addToBasket(userId: string, productId: string) {
+    const user = await this.findOneById(userId);
+    const product = await this.productsService.findOneById(productId);
+    const orderItem = await this.orderItemsService.createItem({
+      quantity: 1,
+      price: product.price,
+      product: product,
+    });
+    console.log('orderItem', orderItem);
+    user.updateOne({ $push: { basket: [orderItem] } }).exec();
+  }
+
+  async deleteFromBasket(userId: string, itemId: string) {
+    const user = await this.findOneById(userId);
+    user.updateOne({ $pullAll: { basket: [itemId] } }).exec();
   }
 }

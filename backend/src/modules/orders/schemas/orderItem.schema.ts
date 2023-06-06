@@ -11,7 +11,6 @@ export type OrderItemDocument = HydratedDocument<OrderItem>;
 
 @Schema()
 export class OrderItem extends CommonSchema {
-
   @ApiProperty()
   @Prop()
   quantity: number;
@@ -21,8 +20,8 @@ export class OrderItem extends CommonSchema {
   price: number;
 
   @ApiProperty()
-  @Prop({ type: Types.ObjectId, ref: 'Order', required: true })
-  order: Order;
+  @Prop({ type: Types.ObjectId, ref: 'Order' })
+  order?: Order;
 
   @ApiProperty()
   @Prop({ type: Types.ObjectId, ref: 'Product', required: true })

@@ -8,3 +8,4 @@ export * from './ProductCard';
 export * from './CartItemContainer';
 export * from './Image';
 export * from './Loading';
+export * from './Link';

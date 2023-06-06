@@ -8,7 +8,7 @@ export type Category = {
 };
 
 export type Product = {
-    category: Category;
+    category: Category | string;
     description: string;
     images: string[];
     name: string;

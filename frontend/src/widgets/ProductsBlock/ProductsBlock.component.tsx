@@ -17,7 +17,7 @@ export const ProductsBlock: React.FC<ProductsBlockProps> = ({ title, products })
             {title && <Title level={2}>{title}</Title>}
             <div className={style.products_list}>
                 {products.map((item) => (
-                    <ProductCard key={item.id} {...item} />
+                    <ProductCard key={item.slug} {...item} />
                 ))}
             </div>
         </div>

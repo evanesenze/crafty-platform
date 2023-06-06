@@ -1,11 +1,11 @@
 import { Button, Col, ConfigProvider, List, Rate, Row, Space, Typography } from 'antd';
 import { clientRoutes } from '../utils/config';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { Image } from 'components';
-import { HeartOutlined } from '@ant-design/icons';
+import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { Comment, Rating } from 'widgets';
-import { useGetProductQuery, useGetReviewsQuery, useToggleFavoriteMutation } from 'store';
+import { useGetProductQuery, useGetReviewsQuery, useAddToBasketMutation, useToggleFavoriteMutation, useGetProfileQuery } from 'store';
 import { getPrice } from 'utils';
 
 export type ProductParams = 'id';
@@ -14,16 +14,24 @@ const { Title, Text, Paragraph } = Typography;
 
 export const Product: React.FC = () => {
     const { id } = useParams<ProductParams>();
-
     const { data: product, isSuccess, refetch, isFetching: isProductFetching } = useGetProductQuery(String(id));
     const { data: reviews, isFetching: isReviewsFetching } = useGetReviewsQuery({ productId: String(id) });
-    const [toggleFavorite] = useToggleFavoriteMutation();
+    const { data: profile, isFetching: isProfileFetching } = useGetProfileQuery();
+    const [toggleFavoriteFetch] = useToggleFavoriteMutation();
+    const [addToBasketFetch, basketState] = useAddToBasketMutation();
+    const rating = reviews?.length ? reviews.reduce((acc, item) => acc + item.rating, 0) / reviews.length : 0;
 
-    // const rating = reviews?.length ? reviews.reduce((acc, item) => acc + item.rating, 0) / reviews.length : 0;
+    const inFavorite = profile?.favorites.findIndex((item) => item.id === id) !== -1;
+    const inBasket = profile?.basket.findIndex((item) => item.id === id) !== -1;
 
-    const toggle = () => {
+    console.log('inFavorite', inFavorite);
+    console.log('inBasket', inBasket);
+
+    const HearIcon = inFavorite ? HeartTwoTone : HeartOutlined;
+
+    const toggleFavorite = () => {
         product &&
-            toggleFavorite(product.id)
+            toggleFavoriteFetch(product.id)
                 .unwrap()
                 .then(() => {
                     refetch();
@@ -31,7 +39,17 @@ export const Product: React.FC = () => {
                 .catch(console.log);
     };
 
-    // if (!isSuccess && !isProductFetching) return <Navigate to={clientRoutes[404]} />;
+    const toggleBasket = () => {
+        product &&
+            addToBasketFetch(product.id)
+                .unwrap()
+                .then(() => {
+                    refetch();
+                })
+                .catch(console.log);
+    };
+
+    if (!isSuccess && !isProductFetching) return <Navigate to={clientRoutes[404]} />;
     return isSuccess ? (
         <React.Fragment>
             <Row style={{ height: 300 }} wrap={false}>
@@ -42,7 +60,7 @@ export const Product: React.FC = () => {
                     <Row>
                         <Col>
                             <Title>{product.name}</Title>
-                            {/* <Row>{!!rating && <Rating value={rating} disabled />}</Row> */}
+                            <Row>{!!rating && <Rating value={rating} disabled />}</Row>
                             <Row>
                                 <Text style={{ fontSize: 14, color: 'gray' }}>Мастер Анастасия</Text>
                             </Row>
@@ -58,23 +76,29 @@ export const Product: React.FC = () => {
                             </Text>
                         </Col>
                         <Col offset={1}>
-                            <Space align="start" size={20}>
-                                <Col>
-                                    <Row>
-                                        <ConfigProvider
-                                            theme={{ token: { colorText: 'white', colorBgContainer: 'black', colorPrimaryHover: 'white' } }}
-                                        >
-                                            <Button size="large">В корзину</Button>
-                                        </ConfigProvider>
-                                    </Row>
-                                    <Row justify="center">
-                                        <Text style={{ fontSize: 14, color: 'gray', lineHeight: '14px', marginTop: 2 }}>Осталось 2</Text>
-                                    </Row>
-                                </Col>
-                                <Col>
-                                    <HeartOutlined onClick={toggle} style={{ fontSize: 36 }} />
-                                </Col>
-                            </Space>
+                            {isProfileFetching ? (
+                                <span>loading...</span>
+                            ) : (
+                                <Space align="start" size={20}>
+                                    <Col>
+                                        <Row>
+                                            <ConfigProvider
+                                                theme={{ token: { colorText: 'white', colorBgContainer: 'black', colorPrimaryHover: 'white' } }}
+                                            >
+                                                <Button size="large" disabled={inBasket} onClick={toggleBasket} loading={basketState.isLoading}>
+                                                    {inBasket ? 'Товар в корзине' : 'В корзину'}
+                                                </Button>
+                                            </ConfigProvider>
+                                        </Row>
+                                        <Row justify="center">
+                                            <Text style={{ fontSize: 14, color: 'gray', lineHeight: '14px', marginTop: 2 }}>Осталось 2</Text>
+                                        </Row>
+                                    </Col>
+                                    <Col>
+                                        <HearIcon onClick={toggleFavorite} twoToneColor={'red'} style={{ fontSize: 36 }} />
+                                    </Col>
+                                </Space>
+                            )}
                         </Col>
                     </Row>
                 </Col>

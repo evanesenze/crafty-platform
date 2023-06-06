@@ -1,8 +1,8 @@
-import { Col, List, Row, Space, Typography } from 'antd';
-import { ProductCard } from 'components';
+import { Col, Divider, List, Row, Space, Typography } from 'antd';
+import { Link, ProductCard } from 'components';
 import React from 'react';
-import { Order, Product, useGetOrderQuery, useGetProductsQuery, useGetProfileQuery } from 'store';
-import { getPrice } from 'utils';
+import { Order, Product, useGetCategoryQuery, useGetOrderQuery, useGetProductsQuery, useGetProfileQuery } from 'store';
+import { clientRoutes, getPrice } from 'utils';
 
 const { Text } = Typography;
 
@@ -10,23 +10,30 @@ export type ProductsWallProps = {
     products?: Product[];
     order?: Order;
     column?: number;
-    title?: string;
+    categoryId?: string;
 };
 
-export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, column = 6, title }) => {
+export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, column = 6, categoryId }) => {
+    const { data: category } = useGetCategoryQuery(String(categoryId), { skip: !categoryId || categoryId === 'default' });
+
     const isOrder = !!order;
     const isCategory = !!products;
     const orderPrice = order?.items?.reduce((acc, item) => acc + item.price, 0);
+
+    const productsPath = category && clientRoutes.getProductsPath(category.id);
 
     return (
         <React.Fragment>
             <Row style={{ marginBottom: 20 }} justify="space-between">
                 <Col>
-                    {title && <Text style={{ fontSize: 24 }}>{title}</Text>}
-                    {/* {isOrder && <Text style={{ fontSize: 24 }}>Заказ № 2344831</Text>} */}
-                    {/* {isCategory && <Text style={{ fontSize: 24 }}>Украшения</Text>} */}
+                    {productsPath && (
+                        <Link to={productsPath} style={{ fontSize: 24 }}>
+                            {category.name}
+                        </Link>
+                    )}
+                    {isOrder && <Text style={{ fontSize: 24 }}>Заказ № {order.id}</Text>}
                 </Col>
-                <Col>{isOrder && <Text>В пути</Text>}</Col>
+                <Col>{isOrder && <Text>{order.status}</Text>}</Col>
             </Row>
             {isOrder && (
                 <React.Fragment>
@@ -58,6 +65,7 @@ export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, col
                     )}
                 />
             )}
+            <Divider />
         </React.Fragment>
     );
 };

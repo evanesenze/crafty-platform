@@ -6,6 +6,7 @@ import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Product } from 'src/modules/products/schemas/product.schema';
 import { IsEnum } from 'class-validator';
+import { OrderItem } from 'src/modules/orders/schemas/orderItem.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -29,8 +30,8 @@ export class User extends CommonSchema {
   email: string;
 
   @ApiProperty()
-  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Product' }] })
-  basket: Product[];
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'OrderItem' }] })
+  basket: OrderItem[];
 
   @ApiProperty()
   @Prop()

@@ -1,11 +1,26 @@
-import { Button, Col, ConfigProvider, Form, Input, Row, Typography } from 'antd';
-import { AutoComplete, NumberInput } from 'components';
-import React from 'react';
+import { AutoComplete, Button, Col, ConfigProvider, Form, Input, Row, Typography } from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
+import { NumberInput } from 'components';
+import React, { useMemo, useState } from 'react';
+import { useGetCategoriesQuery } from 'store';
 import { PicturesWall } from 'widgets';
 
 const { Title } = Typography;
 
+const searchFilter = (search: string, arr: OptionsType, limit = 5) => {
+    const regExp = new RegExp(search, 'gi');
+    return arr?.filter((item) => regExp.test(String(item.label))).slice(0, limit);
+};
+
+export type OptionsType = DefaultOptionType[] | undefined;
+
 export const Create: React.FC = () => {
+    const { data: categories } = useGetCategoriesQuery({});
+    const [search, setSearch] = useState('');
+
+    const options = useMemo<OptionsType>(() => categories?.map((item) => ({ value: item.id, label: item.name })), [categories]);
+    const filteredOptions = useMemo(() => searchFilter(search, options), [options, search]);
+
     return (
         <React.Fragment>
             <Title level={2}>Создание товара</Title>
@@ -13,10 +28,10 @@ export const Create: React.FC = () => {
                 <Row style={{ width: '100%' }}>
                     <Col span={8}>
                         <Form.Item label="Название">
-                            <Input />
+                            <Input maxLength={100} showCount />
                         </Form.Item>
                         <Form.Item label="Категория">
-                            <AutoComplete />
+                            <AutoComplete options={filteredOptions} onSearch={setSearch} searchValue={search} />
                         </Form.Item>
                         <Form.Item>
                             <Row>
@@ -33,7 +48,7 @@ export const Create: React.FC = () => {
                             </Row>
                         </Form.Item>
                         <Form.Item label="Описание">
-                            <Input.TextArea rows={4} />
+                            <Input.TextArea rows={4} showCount maxLength={300} />
                         </Form.Item>
                     </Col>
                     <Col offset={4} span={12}>

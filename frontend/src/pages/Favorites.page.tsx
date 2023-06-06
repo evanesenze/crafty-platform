@@ -12,9 +12,9 @@ export const Favorites: React.FC = () => {
         () =>
             profile
                 ? profile.favorites.reduce((acc, item) => {
-                      const categoryName = item.category?.name ?? 'Без категории';
-                      acc[categoryName] ??= [];
-                      acc[categoryName].push(item);
+                      const categoryId = (typeof item.category === 'string' ? item.category : item.category?.id) ?? 'default';
+                      acc[categoryId] ??= [];
+                      acc[categoryId].push(item);
                       return acc;
                   }, {} as Record<string, Product[]>)
                 : {},
@@ -26,8 +26,8 @@ export const Favorites: React.FC = () => {
     return (
         <React.Fragment>
             <Title level={2}>Избранное</Title>
-            {Object.entries(categories).map(([title, products]) => (
-                <ProductsWall key={title} title={title} products={products} />
+            {Object.entries(categories).map(([categoryId, products]) => (
+                <ProductsWall key={categoryId} categoryId={categoryId} products={products} />
             ))}
         </React.Fragment>
     );

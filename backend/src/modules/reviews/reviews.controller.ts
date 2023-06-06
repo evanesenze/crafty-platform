@@ -42,7 +42,7 @@ export class ReviewsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.reviewsService.findOneById(id, ['user', 'product']);
+    return this.reviewsService.findOneById(id);
   }
 
   @UsePipes(new ValidationPipe())

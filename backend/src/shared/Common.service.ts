@@ -22,10 +22,10 @@ export class CommonService<D extends Document, T extends CommonExecutor<D>> {
     return item.populate(populatedPath).exec();
   }
 
-  findOneById(id: string, populatedPath: string | string[] = '') {
+  findOneById(id: string) {
     const item = this.executor.findById(id);
     if (!item) throw new NotFoundException();
-    return item.populate(populatedPath).exec();
+    return item;
   }
 
   findOne(filter: FilterQuery<D>, populatedPath: string | string[] = '') {
