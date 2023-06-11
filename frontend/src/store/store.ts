@@ -19,3 +19,5 @@ export const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+
+export type UpdateEntity<T extends { id: string }> = Partial<T> & Pick<T, 'id'>;

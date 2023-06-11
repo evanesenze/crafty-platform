@@ -38,11 +38,12 @@ export class OrdersController {
   @Get()
   @ApiQuery({ name: 'buyerId', required: false, type: 'string' })
   findAll(@Query('buyerId') buyerId: string) {
-    return this.ordersService.findAll({ buyer: buyerId }, [
-      'items',
-      'buyer',
-      'seller',
-    ]);
+    return this.ordersService
+      .findAll({ buyer: buyerId })
+      .populate('items')
+      .populate('seller', { name: true })
+      .populate({ path: 'items', populate: 'product' })
+      .exec();
   }
 
   @Get(':id')
@@ -64,32 +65,25 @@ export class OrdersController {
     return this.ordersService.remove(id);
   }
 
-  @Get(':orderId/items/:itemId')
-  findOneItem(
-    @Param('orderId') orderId: string,
-    @Param('itemId') itemId: string,
-  ) {
-    return this.orderItemsService.findOneById('');
+  @Get('items/:itemId')
+  findOneItem(@Param('itemId') itemId: string) {
+    return this.orderItemsService.findOneById(itemId);
   }
 
   @UsePipes(new ValidationPipe())
   @Auth()
-  @Patch(':orderId/items/:itemId')
+  @Patch('items/:itemId')
   updateItem(
-    @Param('orderId') orderId: string,
     @Param('itemId') itemId: string,
     @Body() updateOrderDto: UpdateOrderItemDto,
   ) {
-    return this.orderItemsService.updateItem('', updateOrderDto);
+    return this.orderItemsService.updateItem(itemId, updateOrderDto);
   }
 
   @UsePipes(new ValidationPipe())
   @Auth()
-  @Delete(':orderId/items/:itemId')
-  removeItem(
-    @Param('orderId') orderId: string,
-    @Param('itemId') itemId: string,
-  ) {
-    return this.orderItemsService.remove('');
+  @Delete('items/:itemId')
+  removeItem(@Param('itemId') itemId: string) {
+    return this.orderItemsService.remove(itemId);
   }
 }

@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { ArrayMinSize, IsNumber, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { ArrayMinSize, IsNumber, IsString } from 'class-validator';
 
 export class CreateProductDto {
   @ApiProperty()
@@ -13,6 +13,10 @@ export class CreateProductDto {
   @ApiProperty()
   @IsString()
   category: string;
+
+  @ApiProperty()
+  @IsString()
+  owner: string;
 
   @ApiProperty()
   @IsNumber()

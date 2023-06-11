@@ -1,10 +1,10 @@
-import { Button, Col, ConfigProvider, List, Rate, Row, Space, Typography } from 'antd';
+import { Button, Col, ConfigProvider, List, Rate, Row, Skeleton, Space, Typography, message } from 'antd';
 import { clientRoutes } from '../utils/config';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { Image } from 'components';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
-import { Comment, Rating } from 'widgets';
+import { AuthProvider, Comment, Rating } from 'widgets';
 import { useGetProductQuery, useGetReviewsQuery, useAddToBasketMutation, useToggleFavoriteMutation, useGetProfileQuery } from 'store';
 import { getPrice } from 'utils';
 
@@ -12,28 +12,21 @@ export type ProductParams = 'id';
 
 const { Title, Text, Paragraph } = Typography;
 
-export const Product: React.FC = () => {
+export const ProductControls = () => {
     const { id } = useParams<ProductParams>();
-    const { data: product, isSuccess, refetch, isFetching: isProductFetching } = useGetProductQuery(String(id));
-    const { data: reviews, isFetching: isReviewsFetching } = useGetReviewsQuery({ productId: String(id) });
+    const { data: product, refetch } = useGetProductQuery(String(id));
     const { data: profile, isFetching: isProfileFetching } = useGetProfileQuery();
-    const [toggleFavoriteFetch] = useToggleFavoriteMutation();
+    const [toggleFavoriteFetch, favoriteState] = useToggleFavoriteMutation();
     const [addToBasketFetch, basketState] = useAddToBasketMutation();
-    const rating = reviews?.length ? reviews.reduce((acc, item) => acc + item.rating, 0) / reviews.length : 0;
 
-    const inFavorite = profile?.favorites.findIndex((item) => item.id === id) !== -1;
-    const inBasket = profile?.basket.findIndex((item) => item.id === id) !== -1;
-
-    console.log('inFavorite', inFavorite);
-    console.log('inBasket', inBasket);
-
-    const HearIcon = inFavorite ? HeartTwoTone : HeartOutlined;
+    const loading = favoriteState.isLoading || basketState.isLoading || isProfileFetching;
 
     const toggleFavorite = () => {
         product &&
             toggleFavoriteFetch(product.id)
                 .unwrap()
                 .then(() => {
+                    message.success(`Товар ${inFavorite ? 'убран из избранного' : 'добавлен в избранное'}`);
                     refetch();
                 })
                 .catch(console.log);
@@ -48,6 +41,45 @@ export const Product: React.FC = () => {
                 })
                 .catch(console.log);
     };
+
+    const inFavorite = useMemo(() => !!profile && profile.favorites.findIndex((item) => item.id === id) !== -1, [profile?.favorites]);
+    const inBasket = useMemo(() => !!profile && profile.basket.findIndex((item) => item.product.id === id) !== -1, [profile?.basket]);
+    const HearIcon = inFavorite ? HeartTwoTone : HeartOutlined;
+
+    if (loading) {
+        return <Skeleton.Input size="large" active style={{ marginBottom: 16 }} />;
+    }
+
+    return (
+        <AuthProvider>
+            <Row style={{ display: 'flex' }} wrap={false}>
+                <Col>
+                    <Row style={{ marginBottom: 16 }}>
+                        <ConfigProvider theme={{ token: { colorText: 'white', colorBgContainer: 'black', colorPrimaryHover: 'white' } }}>
+                            <Button size="large" disabled={inBasket} onClick={toggleBasket} loading={basketState.isLoading}>
+                                {inBasket ? 'Товар в корзине' : 'В корзину'}
+                            </Button>
+                        </ConfigProvider>
+                    </Row>
+                    {/* <Row justify="center">
+                        <Text style={{ fontSize: 14, color: 'gray', lineHeight: '14px', marginTop: 2 }}>Осталось 2</Text>
+                    </Row> */}
+                </Col>
+                <Col offset={2}>
+                    <HearIcon onClick={toggleFavorite} twoToneColor={'red'} style={{ fontSize: 36 }} />
+                </Col>
+            </Row>
+        </AuthProvider>
+    );
+};
+
+export const Product: React.FC = () => {
+    const { id } = useParams<ProductParams>();
+    const { data: product, isSuccess, isFetching: isProductFetching } = useGetProductQuery(String(id));
+    const { data: reviews, isFetching: isReviewsFetching } = useGetReviewsQuery({ productId: String(id) });
+
+    const rating = useMemo(() => (reviews?.length ? reviews.reduce((acc, item) => acc + item.rating, 0) / reviews.length : 0), [reviews]);
+    const price = getPrice({ value: product?.price ?? 0 });
 
     if (!isSuccess && !isProductFetching) return <Navigate to={clientRoutes[404]} />;
     return isSuccess ? (
@@ -69,36 +101,14 @@ export const Product: React.FC = () => {
                             </Row>
                         </Col>
                     </Row>
-                    <Row align="top" style={{ top: 16, position: 'relative' }}>
+                    <Row wrap={false} align="top" style={{ top: 16, position: 'relative' }}>
                         <Col>
-                            <Text strong style={{ fontSize: 32, lineHeight: '32px' }}>
-                                {getPrice({ value: product.price })}
+                            <Text strong style={{ fontSize: 32, lineHeight: '32px', whiteSpace: 'nowrap' }}>
+                                {price}
                             </Text>
                         </Col>
                         <Col offset={1}>
-                            {isProfileFetching ? (
-                                <span>loading...</span>
-                            ) : (
-                                <Space align="start" size={20}>
-                                    <Col>
-                                        <Row>
-                                            <ConfigProvider
-                                                theme={{ token: { colorText: 'white', colorBgContainer: 'black', colorPrimaryHover: 'white' } }}
-                                            >
-                                                <Button size="large" disabled={inBasket} onClick={toggleBasket} loading={basketState.isLoading}>
-                                                    {inBasket ? 'Товар в корзине' : 'В корзину'}
-                                                </Button>
-                                            </ConfigProvider>
-                                        </Row>
-                                        <Row justify="center">
-                                            <Text style={{ fontSize: 14, color: 'gray', lineHeight: '14px', marginTop: 2 }}>Осталось 2</Text>
-                                        </Row>
-                                    </Col>
-                                    <Col>
-                                        <HearIcon onClick={toggleFavorite} twoToneColor={'red'} style={{ fontSize: 36 }} />
-                                    </Col>
-                                </Space>
-                            )}
+                            <ProductControls />
                         </Col>
                     </Row>
                 </Col>

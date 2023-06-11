@@ -54,7 +54,8 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
   async toggleFavorites(userId: string, productId: string) {
     const user = await this.findOneById(userId);
     await this.productsService.findOneById(productId);
-    const isExist = user.favorites.some((item) => item.id === productId);
+    const isExist = user.favorites.includes(productId as any);
+
     return user
       .updateOne({
         [isExist ? '$pullAll' : '$push']: { favorites: [productId] },
@@ -71,11 +72,14 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
       product: product,
     });
     console.log('orderItem', orderItem);
-    user.updateOne({ $push: { basket: [orderItem] } }).exec();
+    await user.updateOne({ $push: { basket: [orderItem] } }).exec();
+    return true;
   }
 
   async deleteFromBasket(userId: string, itemId: string) {
     const user = await this.findOneById(userId);
-    user.updateOne({ $pullAll: { basket: [itemId] } }).exec();
+    await user.updateOne({ $pullAll: { basket: [itemId] } }).exec();
+    await this.orderItemsService.remove(itemId);
+    return true;
   }
 }

@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
 import { Product } from './product.api';
+import { UpdateEntity } from '..';
 
 export type OrderItem = {
     id: string;
@@ -14,8 +15,19 @@ export type Order = {
     id: string;
     status: string;
     items: OrderItem[];
+    comment?: string;
+    address: string;
     buyer: {};
     seller: {};
+};
+
+export type CreateOrderDto = {
+    items: string[];
+    comment?: string;
+    address: string;
+    buyer: string;
+    seller: string;
+    discount: number;
 };
 
 export type CommonQueries = {};
@@ -38,7 +50,7 @@ export const orderApi = createApi({
         getOrder: query<Order, any>({
             query: (id) => id,
         }),
-        createOrder: mutation<any, any>({
+        createOrder: mutation<Order, CreateOrderDto>({
             query: (body) => ({
                 url: '',
                 method: 'POST',
@@ -58,19 +70,19 @@ export const orderApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        getOrderItem: query<any, any>({
-            query: ({ orderId, id }) => `${id}/items/${orderId}`,
+        getOrderItem: query<OrderItem, string>({
+            query: (id) => `items/${id}`,
         }),
-        updateOrderItem: mutation<any, any>({
+        updateOrderItem: mutation<OrderItem, UpdateEntity<OrderItem>>({
             query: (body) => ({
-                url: `${body.orderId}/items/${body.id}`,
+                url: `items/${body.id}`,
                 method: 'PATCH',
                 body,
             }),
         }),
-        deleteOrderItem: mutation<any, any>({
-            query: ({ orderId, id }) => ({
-                url: `${id}/items/${orderId}`,
+        deleteOrderItem: mutation<any, string>({
+            query: (id) => ({
+                url: `items/${id}`,
                 method: 'DELETE',
             }),
         }),

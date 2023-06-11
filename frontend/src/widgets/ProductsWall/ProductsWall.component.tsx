@@ -11,15 +11,15 @@ export type ProductsWallProps = {
     order?: Order;
     column?: number;
     categoryId?: string;
+    title?: string;
 };
 
-export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, column = 6, categoryId }) => {
+export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, column = 6, categoryId, title }) => {
     const { data: category } = useGetCategoryQuery(String(categoryId), { skip: !categoryId || categoryId === 'default' });
 
     const isOrder = !!order;
     const isCategory = !!products;
     const orderPrice = order?.items?.reduce((acc, item) => acc + item.price, 0);
-
     const productsPath = category && clientRoutes.getProductsPath(category.id);
 
     return (
@@ -32,6 +32,7 @@ export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, col
                         </Link>
                     )}
                     {isOrder && <Text style={{ fontSize: 24 }}>Заказ № {order.id}</Text>}
+                    {title && <Text style={{ fontSize: 24 }}>{title}</Text>}
                 </Col>
                 <Col>{isOrder && <Text>{order.status}</Text>}</Col>
             </Row>

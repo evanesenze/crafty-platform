@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
+import { UpdateEntity } from '..';
 
 export type Category = {
     name: string;
@@ -27,7 +28,7 @@ export type GetProductsQueries = CommonQueries & {
 
 export const productApi = createApi({
     reducerPath: 'product/api',
-    baseQuery: getBaseQuery('products'),
+    baseQuery: getBaseQuery('products', false),
     endpoints: ({ mutation, query }) => ({
         getProducts: query<Product[], GetProductsQueries>({
             query: (params) => {
@@ -47,14 +48,14 @@ export const productApi = createApi({
         getProductBySlug: query<Product, string>({
             query: (slug) => `with-slug/${slug}`,
         }),
-        createProduct: mutation<any, any>({
+        createProduct: mutation<Product, FormData>({
             query: (body) => ({
                 url: '',
                 method: 'POST',
                 body,
             }),
         }),
-        updateProduct: mutation<any, any>({
+        updateProduct: mutation<Product, UpdateEntity<Product>>({
             query: (body) => ({
                 url: body.id,
                 method: 'PATCH',

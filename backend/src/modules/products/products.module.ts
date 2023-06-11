@@ -1,17 +1,26 @@
 import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
-import { Product, ProductExecutor, ProductSchema } from './schemas/product.schema';
+import {
+  Product,
+  ProductExecutor,
+  ProductSchema,
+} from './schemas/product.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategoriesModule } from '../categories/categories.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { GridFsMulterConfigService } from '../files/GridFsMulterConfig.service';
 
 @Module({
   controllers: [ProductsController],
-  providers: [ProductExecutor, ProductsService],
+  providers: [GridFsMulterConfigService, ProductExecutor, ProductsService],
   imports: [
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
-    CategoriesModule
+    CategoriesModule,
+    MulterModule.registerAsync({
+      useClass: GridFsMulterConfigService,
+    }),
   ],
-  exports: [ProductsService, ProductExecutor]
+  exports: [ProductsService, ProductExecutor],
 })
-export class ProductsModule { }
+export class ProductsModule {}

@@ -16,10 +16,10 @@ export class CommonService<D extends Document, T extends CommonExecutor<D>> {
     return this.executor.search(queries);
   }
 
-  findAll(filter?: FilterQuery<D>, populatedPath: string | string[] = '') {
+  findAll(filter?: FilterQuery<D>) {
     const item = this.executor.find(filter);
     if (!item) throw new NotFoundException();
-    return item.populate(populatedPath).exec();
+    return item;
   }
 
   findOneById(id: string) {

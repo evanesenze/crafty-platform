@@ -33,11 +33,16 @@ export class ReviewsController {
   @ApiQuery({ name: 'productId', required: false, type: 'string' })
   findAll(@Query('productId') productId: string) {
     if (productId)
-      return this.reviewsService.findAll({ product: productId }, [
-        'user',
-        'product',
-      ]);
-    return this.reviewsService.findAll({}, ['user', 'product']);
+      return this.reviewsService
+        .findAll({ product: productId })
+        .populate('user')
+        .populate('product')
+        .exec();
+    return this.reviewsService
+      .findAll({})
+      .populate('user')
+      .populate('product')
+      .exec();
   }
 
   @Get(':id')

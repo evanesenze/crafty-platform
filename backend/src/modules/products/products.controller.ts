@@ -7,12 +7,43 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  Req,
+  UploadedFiles,
+  BadRequestException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiTags, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiQuery,
+  ApiConsumes,
+  ApiBody,
+  ApiBodyOptions,
+} from '@nestjs/swagger';
 import { Product } from './schemas/product.schema';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
+import { Auth } from '../auth/decortators/auth.decorator';
+import { CurrentUser } from '../auth/decortators/user.decorator';
+
+const options: ApiBodyOptions = {
+  schema: {
+    type: 'object',
+    properties: {
+      images: {
+        type: 'string',
+        format: 'binary',
+        maxItems: 8,
+      },
+    },
+  },
+};
+
+type CreateBody = Omit<CreateProductDto, 'images' | 'price' | 'owner'> & {
+  price: string;
+};
 
 @ApiTags('Products')
 @Controller('products')
@@ -20,8 +51,29 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.createProduct(createProductDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(options)
+  @UseInterceptors(FilesInterceptor('images', 8))
+  @Auth()
+  create(
+    @Req() req: Request,
+    @UploadedFiles() images: Array<Express.Multer.File>,
+    @Body() body: CreateBody,
+    @CurrentUser('id') userId: string,
+  ) {
+    if (!images?.length) throw new BadRequestException('Empty images array');
+    const protocol = req.protocol;
+    const host = req.get('Host');
+    const url = `${protocol}://${host}/`;
+
+    const data: CreateProductDto = {
+      ...body,
+      price: Number(body.price),
+      images: images.map(({ filename }) => url + filename),
+      owner: userId,
+    };
+
+    return this.productsService.createProduct(data);
   }
 
   @Get()
@@ -37,15 +89,18 @@ export class ProductsController {
       return this.productsService.search({ query });
     }
     if (ownerId) {
-      return await this.productsService.findAll({ owner: ownerId }, 'category');
+      return await this.productsService
+        .findAll({ owner: ownerId })
+        .populate('category')
+        .exec();
     } else if (categoryId) {
       console.log('categoryId', categoryId);
-      return await this.productsService.findAll(
-        { category: categoryId },
-        'category',
-      );
+      return await this.productsService
+        .findAll({ category: categoryId })
+        .populate('category')
+        .exec();
     } else {
-      return await this.productsService.findAll({}, 'category');
+      return await this.productsService.findAll({}).populate('category').exec();
     }
   }
 

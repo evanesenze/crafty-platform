@@ -4,7 +4,7 @@ import { HydratedDocument, Model, Schema as MongooseSchema } from 'mongoose';
 import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
 import { OrderItem } from './orderItem.schema';
 import { User } from 'src/modules/users/schemas/user.schema';
 
@@ -21,11 +21,18 @@ export enum OrderStatus {
 
 @Schema()
 export class Order extends CommonSchema {
-
   @ApiProperty()
   @Prop({ enum: OrderStatus, default: OrderStatus.CREATED })
   @IsEnum(OrderStatus)
   status: OrderStatus;
+
+  @ApiProperty()
+  @Prop()
+  address: string;
+
+  @ApiProperty()
+  @Prop()
+  comment: string;
 
   @ApiProperty()
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'OrderItem' }] })

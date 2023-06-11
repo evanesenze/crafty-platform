@@ -8,6 +8,9 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { PaginationModule } from './modules/pagination/pagination.module';
+import { FilesModule } from './modules/files/Files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -21,6 +24,10 @@ import { PaginationModule } from './modules/pagination/pagination.module';
     ReviewsModule,
     OrdersModule,
     PaginationModule,
+    FilesModule,
+    ServeStaticModule.forRoot({
+      rootPath: 'upload',
+    }),
   ],
 })
-export class AppModule { }
+export class AppModule {}

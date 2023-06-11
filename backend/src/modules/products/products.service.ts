@@ -22,8 +22,15 @@ export class ProductsService extends CommonService<
 
   async createProduct(dto: CreateProductDto) {
     const slug = await this.getProductSlug(dto.name);
-    this.categoriesService.findOneById(dto.category);
-    return this.create({ ...dto, slug });
+    let category = await this.categoriesService
+      .findOne({ name: dto.category })
+      .catch(() => console.log('New category'));
+    if (!category) {
+      category = await this.categoriesService.createCategory({
+        name: dto.category,
+      });
+    }
+    return this.create({ ...dto, slug, category: category.id });
   }
 
   async updateProduct(id: string, dto: UpdateProductDto) {
@@ -44,7 +51,7 @@ export class ProductsService extends CommonService<
   }
 
   async getRecommendations() {
-    const products = await this.findAll({}, 'category');
+    const products = await this.findAll({}).populate('category').exec();
     const offset = Math.min(
       Math.round(Math.random() * products.length),
       products.length - recommendationsCount,
