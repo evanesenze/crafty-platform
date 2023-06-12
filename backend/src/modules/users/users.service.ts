@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import {
   User,
@@ -21,6 +23,7 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
   constructor(
     executor: UserExecutor,
     private productsService: ProductsService,
+    @Inject(forwardRef(() => OrderItemsService))
     private orderItemsService: OrderItemsService,
   ) {
     super(executor);
@@ -69,7 +72,7 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
     const orderItem = await this.orderItemsService.createItem({
       quantity: 1,
       price: product.price,
-      product: product,
+      product: product as any,
     });
     console.log('orderItem', orderItem);
     await user.updateOne({ $push: { basket: [orderItem] } }).exec();
@@ -79,7 +82,8 @@ export class UsersService extends CommonService<UserDocument, UserExecutor> {
   async deleteFromBasket(userId: string, itemId: string) {
     const user = await this.findOneById(userId);
     await user.updateOne({ $pullAll: { basket: [itemId] } }).exec();
-    await this.orderItemsService.remove(itemId);
+    const orderItem = await this.orderItemsService.findOneById(itemId);
+    !orderItem.order && (await this.orderItemsService.remove(itemId));
     return true;
   }
 }

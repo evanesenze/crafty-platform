@@ -4,7 +4,7 @@ export type LoginDto = {
 };
 
 export type RefreshTokenDto = {
-    refreshToken: 'string';
+    refreshToken: string;
 };
 
 export type RegisterDto = {

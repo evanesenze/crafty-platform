@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model, Types } from 'mongoose';
+import { HydratedDocument, Model, Schema as MongooseSchema } from 'mongoose';
 import { CommonExecutor } from 'src/shared/Common.executor';
 import { CommonSchema } from 'src/shared/Common.schema';
 import { ApiProperty } from '@nestjs/swagger';
@@ -20,11 +20,11 @@ export class OrderItem extends CommonSchema {
   price: number;
 
   @ApiProperty()
-  @Prop({ type: Types.ObjectId, ref: 'Order' })
-  order?: Order;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Order' })
+  order: Order;
 
   @ApiProperty()
-  @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Product', required: true })
   product: Product;
 }
 

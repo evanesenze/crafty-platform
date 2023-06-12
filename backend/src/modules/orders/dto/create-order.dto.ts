@@ -9,6 +9,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class OrderItemDto {
   @ApiProperty()
@@ -22,6 +23,10 @@ export class OrderItemDto {
   @ApiProperty()
   @IsString()
   product: string;
+
+  @ApiProperty()
+  @IsString()
+  order?: ObjectId;
 }
 
 export class CreateOrderDto {
