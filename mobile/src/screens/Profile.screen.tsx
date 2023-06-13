@@ -10,9 +10,11 @@ import Loading from '../components/Loading.component';
 import { useAppActions, useAppSelector } from '../hooks/useApp';
 import useModal from '../hooks/useModal';
 import { useGetProfileQuery } from '../store';
+import { useAuth } from '../hooks/useAuth';
 
 const Profile: React.FC<NativeStackScreenProps<AppParamsList, 'Profile'>> = ({ navigation }) => {
   const { data: profile, isFetching, isSuccess } = useGetProfileQuery();
+  const { logout } = useAuth();
   const [openEditInfo, editInfo] = useModal(EditInfo, { key: 'editInfo', profile });
 
   const handleLogout = () => {
@@ -23,9 +25,7 @@ const Profile: React.FC<NativeStackScreenProps<AppParamsList, 'Profile'>> = ({ n
       {
         text: 'Да',
         onPress: () => {
-          // storageActiveGroupId.removeItem();
-          // storageToken.removeItem();
-          // logout();
+          logout();
           navigation.navigate('Auth');
         },
       },

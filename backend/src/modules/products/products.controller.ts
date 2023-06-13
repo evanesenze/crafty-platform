@@ -111,7 +111,7 @@ export class ProductsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productsService.findOneById(id);
+    return this.productsService.findOneById(id).populate('category').exec();
   }
 
   @Get('with-slug/:slug')

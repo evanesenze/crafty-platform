@@ -12,12 +12,6 @@ const getPrepareHeaders =
         return headers;
     };
 
-const responseHandler: ResponseHandler = async (response) => {
-    if (response.status === 401) {
-        console.log(response);
-    }
-    return response.json();
-};
 
 export const getBaseQuery = (url?: string, withContentType = true) =>
     fetchBaseQuery({ baseUrl: SERVER_URL + (url ? url + '/' : ''), prepareHeaders: getPrepareHeaders(withContentType) });

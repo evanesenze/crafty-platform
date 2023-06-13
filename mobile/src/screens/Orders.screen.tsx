@@ -23,7 +23,7 @@ const Orders: React.FC<NativeStackScreenProps<AppParamsList, 'Orders'>> = ({ nav
           <Text h3 style={styles.historyTitle}>
             Ваши заказы
           </Text>
-          {orders.map((props, i) => (
+          {orders.map((props) => (
             <OrderItem key={props.id} {...props} />
           ))}
         </ScrollView>

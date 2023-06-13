@@ -7,7 +7,6 @@ const numberPattern = /\d+/g;
 
 const OrderItem: React.FC<Order> = ({ id, status, items, address }) => {
   const price = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  console.log(items);
   const orderNumber = id.match(numberPattern)?.join('');
   return (
     <View style={styles.container}>
@@ -15,7 +14,7 @@ const OrderItem: React.FC<Order> = ({ id, status, items, address }) => {
         <Text style={styles.itemTitle}>Заказ № {orderNumber}</Text>
         <Text style={styles.description}>Статус заказа: {status}</Text>
         <Text style={styles.description}>Адрес доставки: {address}</Text>
-        <Text style={{...styles.description, marginBottom: '5%'}}>Общая стоимость: {price} P</Text>
+        <Text style={{ ...styles.description, marginBottom: '5%' }}>Общая стоимость: {price} P</Text>
       </View>
       <View style={styles.itemsWrapper}>
         {items.map((item) => {

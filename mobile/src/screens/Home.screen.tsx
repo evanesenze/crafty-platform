@@ -34,6 +34,7 @@ const Home: React.FC<NativeStackScreenProps<AppParamsList, 'Home'>> = ({ navigat
             value={q}
             onChangeText={setSearchValue}
             lightTheme
+            placeholder='Поиск'
             round
             containerStyle={styles.searchBarContainer}
             inputContainerStyle={styles.searchBarInput}

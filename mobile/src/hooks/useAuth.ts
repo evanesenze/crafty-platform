@@ -26,7 +26,6 @@ export const useAuth = () => {
   }, []);
 
   const saveCredentials = (creds: AuthSuccess) => {
-    console.log(creds);
     const { refreshToken, accessToken } = creds;
     refreshTokenStorage.setItem(refreshToken);
     accessTokenStorage.setItem(accessToken);
@@ -70,5 +69,11 @@ export const useAuth = () => {
       .then(saveCredentials)
       .catch(() => onError('refetch'));
 
-  return { isAuth, loading, login, register, isError };
+  const logout = () => {
+    refreshTokenStorage.removeItem();
+    accessTokenStorage.removeItem();
+    resetAuth({ isError: false });
+  };
+
+  return { isAuth, loading, login, register, logout, isError };
 };

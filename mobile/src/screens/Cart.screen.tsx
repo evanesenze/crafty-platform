@@ -126,7 +126,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     paddingBottom: 20,
-    marginLeft: '4%',
+    marginLeft: '2%',
+    marginRight: '2%',
     backgroundColor: 'white',
   },
   totalCost: {

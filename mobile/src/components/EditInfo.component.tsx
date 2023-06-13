@@ -24,7 +24,7 @@ const EditInfo: React.FC<CommonModalProps<IEditInfoProps, string>> = ({ props, .
         Alert.alert('Вы обновили профиль');
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         Alert.alert('Ошибка при обновлении профиля');
       });
     onCancel();

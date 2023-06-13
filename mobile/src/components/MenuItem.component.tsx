@@ -24,7 +24,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item, inBasket, refetch, goToCart,
       .then(() => {
         refetch();
       })
-      .catch(console.log);
+      .catch(console.error);
   };
 
   return (
