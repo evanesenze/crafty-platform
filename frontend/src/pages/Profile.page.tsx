@@ -1,7 +1,10 @@
-import { Col, Divider, List, Rate, Row, Space, Typography } from 'antd';
+import { Col, Divider, List, Modal, Rate, Row, Space, Typography } from 'antd';
 import { CartItemContainer, Image, Link } from 'components';
+import { useAuth } from 'hooks/useAuth';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGetProductsQuery, useGetProfileQuery } from 'store';
+import { clientRoutes } from 'utils/config';
 import { Rating } from 'widgets';
 
 const { Text } = Typography;
@@ -11,8 +14,20 @@ const avatar =
 
 export const Profile: React.FC = () => {
     const { data: profile, isSuccess: isSuccessProfile } = useGetProfileQuery();
+    const { logout } = useAuth();
     const ownerId = profile?.id;
     const { data: products, isFetching } = useGetProductsQuery({ ownerId }, { skip: !ownerId });
+    const nav = useNavigate();
+
+    const onLogout = () =>
+        Modal.confirm({
+            title: 'Подтвердите действие',
+            content: 'Вы действительно хотите выйти?',
+            onOk: () => {
+                logout();
+                nav(clientRoutes.home);
+            },
+        });
 
     return isSuccessProfile ? (
         <Row>
@@ -30,16 +45,21 @@ export const Profile: React.FC = () => {
                         <Row>
                             <Col>
                                 <Row>
-                                    <Text strong style={{ fontSize: 14, color: 'gray' }}>
+                                    <Text strong style={{ cursor: 'pointer', fontSize: 14, color: 'gray', marginBottom: 5 }}>
                                         Изменить профиль
                                     </Text>
                                 </Row>
                                 <Row>
+                                    <Text onClick={onLogout} strong style={{ cursor: 'pointer', fontSize: 14, color: 'gray' }}>
+                                        Выйти
+                                    </Text>
+                                </Row>
+                                {/* <Row>
                                     <Rating value={4.99} disabled />
                                 </Row>
                                 <Row>
                                     <Text strong>26 отзывов</Text>
-                                </Row>
+                                </Row> */}
                             </Col>
                         </Row>
                     </Col>
@@ -49,18 +69,18 @@ export const Profile: React.FC = () => {
                         <Space size={16} direction="vertical">
                             <Text strong>Личная информация</Text>
                             <Link to="">Баланс средств</Link>
-                            <Text>Сохраненные карты </Text>
-                            <Text>Мои данные</Text>
-                            <Text>Защита профиля</Text>
+                            <Link to="">Сохраненные карты </Link>
+                            <Link to="">Мои данные</Link>
+                            <Link to="">Защита профиля</Link>
                         </Space>
                         <Divider />
                         <Space size={16} direction="vertical">
                             <Text strong>Заказы</Text>
-                            <Text>Моя корзина</Text>
-                            <Text>Мои заказы</Text>
-                            <Text>Мои возвраты</Text>
-                            <Text>Купленные товары</Text>
-                            <Text>Электронные чеки</Text>
+                            <Link to="">Моя корзина</Link>
+                            <Link to="">Мои заказы</Link>
+                            <Link to="">Мои возвраты</Link>
+                            <Link to="">Купленные товары</Link>
+                            <Link to="">Электронные чеки</Link>
                         </Space>
                     </Col>
                 </Row>
@@ -76,7 +96,7 @@ export const Profile: React.FC = () => {
                     overflow: 'hidden',
                 }}
             >
-                <Text>Мои товары</Text>
+                <Text strong>Мои товары</Text>
                 <List
                     locale={{ emptyText: 'У пользователя нет товаров' }}
                     loading={isFetching}
@@ -84,7 +104,7 @@ export const Profile: React.FC = () => {
                     itemLayout="vertical"
                     renderItem={(item) => (
                         <List.Item key={item.id}>
-                            <CartItemContainer product={item} />
+                            <CartItemContainer product={item} canDelete height={125} />
                         </List.Item>
                     )}
                 />

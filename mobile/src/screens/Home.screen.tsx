@@ -34,14 +34,13 @@ const Home: React.FC<NativeStackScreenProps<AppParamsList, 'Home'>> = ({ navigat
             value={q}
             onChangeText={setSearchValue}
             lightTheme
-            placeholder='Поиск'
+            placeholder="Поиск"
             round
             containerStyle={styles.searchBarContainer}
             inputContainerStyle={styles.searchBarInput}
           />
-          {isFetching ? (
-            <Loading />
-          ) : (
+          {isFetching && <Loading />}
+          {isSuccess && (
             <FlatList
               data={products}
               keyExtractor={(item) => item.id}

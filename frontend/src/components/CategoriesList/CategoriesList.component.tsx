@@ -25,7 +25,10 @@ export const CategoriesList: React.FC<CategoriesListProps> = (props) => {
     const { data: categories } = useGetCategoriesQuery({});
     const [searchParams, setSearchParams] = useSearchParams();
     const className = cn(style.categories_list, props.className, { [style.categories_list__horizontal]: isHorizontal });
-    const items = useMemo<MenuProps['items']>(() => categories?.map((item) => ({ key: item.id, label: item.name })), [categories]);
+    const items = useMemo<MenuProps['items']>(
+        () => categories?.map((item) => ({ key: item.id, label: item.name.toLocaleLowerCase() })),
+        [categories]
+    );
     const filteredItems = useMemo(
         () => items?.filter((item) => !search || new RegExp(search).test(String((item as MenuItemType).label))),
         [items, search]
@@ -34,7 +37,6 @@ export const CategoriesList: React.FC<CategoriesListProps> = (props) => {
 
     const onSelect: MenuProps['onSelect'] = ({ key }) => {
         if (key === moreButtonKey) return;
-        console.log(key);
         nav(clientRoutes.products);
         searchParams.set(categoryParamName, key);
         setSearchParams(searchParams);

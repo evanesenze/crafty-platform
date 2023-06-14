@@ -35,7 +35,7 @@ export class ReviewsController {
     if (productId)
       return this.reviewsService
         .findAll({ product: productId })
-        .populate('user')
+        .populate('user', { avatar: true, email: true, id: true, name: true })
         .populate('product')
         .exec();
     return this.reviewsService

@@ -39,7 +39,6 @@ export const Create: React.FC = () => {
     };
 
     const onFinish = (values: any) => {
-        console.log(values);
         const body = new FormData();
         body.append('name', values.name);
         body.append('category', values.category);

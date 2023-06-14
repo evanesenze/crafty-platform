@@ -8,7 +8,7 @@ export type OrderItem = {
     quantity: number;
     price: number;
     order: string;
-    product: Product;
+    product: Product | null;
 };
 
 export type Order = {

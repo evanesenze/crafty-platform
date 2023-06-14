@@ -5,6 +5,7 @@ import { Order, Product, useGetCategoryQuery, useGetOrderQuery, useGetProductsQu
 import { clientRoutes, getPrice } from 'utils';
 
 const { Text } = Typography;
+const numberPattern = /\d+/g;
 
 export type ProductsWallProps = {
     products?: Product[];
@@ -21,6 +22,7 @@ export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, col
     const isCategory = !!products;
     const orderPrice = order?.items?.reduce((acc, item) => acc + item.price, 0);
     const productsPath = category && clientRoutes.getProductsPath(category.id);
+    const orderNumber = order?.id.match(numberPattern)?.join('');
 
     return (
         <React.Fragment>
@@ -31,8 +33,12 @@ export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, col
                             {category.name}
                         </Link>
                     )}
-                    {isOrder && <Text style={{ fontSize: 24 }}>Заказ № {order.id}</Text>}
-                    {title && <Text style={{ fontSize: 24 }}>{title}</Text>}
+                    {isOrder && <Text style={{ fontSize: 24 }}>Заказ № {orderNumber}</Text>}
+                    {title && (
+                        <Text strong style={{ fontSize: 32 }}>
+                            {title}
+                        </Text>
+                    )}
                 </Col>
                 <Col>{isOrder && <Text>{order.status}</Text>}</Col>
             </Row>
@@ -46,11 +52,10 @@ export const ProductsWall: React.FC<ProductsWallProps> = ({ products, order, col
                         </Col>
                     </Row>
                     <List
+                        grid={{ column, gutter: 20 }}
                         dataSource={order.items}
-                        renderItem={(item) => (
-                            <List.Item key={item.id}>
-                                <ProductCard {...item.product} price={item.price} />
-                            </List.Item>
+                        renderItem={({ id, product, price }) => (
+                            <List.Item key={id}>{!!product && <ProductCard {...product} price={price} />}</List.Item>
                         )}
                     />
                 </React.Fragment>

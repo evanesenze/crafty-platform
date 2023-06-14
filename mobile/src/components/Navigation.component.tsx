@@ -20,7 +20,7 @@ const buttons: Omit<INavigationBtnProps, 'onClick'>[] = [
   { Icon: ProfileIcon, type: 'Profile' },
 ];
 
-interface INavigationProps extends BottomTabBarProps {
+export interface INavigationProps extends BottomTabBarProps {
   state: TabNavigationState<AppParamsList>;
   navigation: NavigationHelpers<AppParamsList>;
 }

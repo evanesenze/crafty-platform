@@ -2,7 +2,6 @@ import { Button, Input, Text } from '@rneui/base';
 import { Dialog } from '@rneui/themed';
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
-import { useAppActions, useAppSelector } from '../hooks/useApp';
 import { CommonComponentProps, CommonModalProps } from '../hooks/useModal';
 import { UserProfile, useUpdateProfileMutation } from '../store';
 
@@ -30,9 +29,7 @@ const EditInfo: React.FC<CommonModalProps<IEditInfoProps, string>> = ({ props, .
     onCancel();
   };
 
-  const onCancel = () => {
-    dialogProps.onBackdropPress?.();
-  };
+  const onCancel = () => dialogProps.onBackdropPress?.();
 
   return (
     <Dialog {...dialogProps} onBackdropPress={onCancel}>

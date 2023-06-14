@@ -12,8 +12,8 @@ export const Rating: React.FC<RatingProps> = ({ withText, value, ...rateProps })
     const text = value.toFixed(1);
     return (
         <Space>
-            <Text strong>{text}</Text>
             <Rate value={value} allowHalf {...rateProps} />
+            {!!value && <Text strong>{text}</Text>}
         </Space>
     );
 };

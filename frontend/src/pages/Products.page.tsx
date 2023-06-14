@@ -1,4 +1,5 @@
 import { Divider, Typography } from 'antd';
+import { Loading } from 'components';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useGetCategoryQuery, useGetProductsQuery } from 'store';
@@ -21,7 +22,7 @@ export const Products: React.FC = () => {
     return (
         <React.Fragment>
             {isFetching ? (
-                <span>Loading...</span>
+                <Loading />
             ) : (
                 <>
                     <Title level={2} style={{ marginBottom: 10 }}>

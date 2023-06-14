@@ -18,11 +18,7 @@ export const Orders: React.FC = () => {
                 locale={{ emptyText: 'У вас еще нет заказов' }}
                 dataSource={orders}
                 loading={isFetching}
-                renderItem={(item) => (
-                    <List.Item key={item.id}>
-                        <ProductsWall order={item} />
-                    </List.Item>
-                )}
+                renderItem={(item) => <ProductsWall key={item.id} order={item} />}
             />
         </React.Fragment>
     );

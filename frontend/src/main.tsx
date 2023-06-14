@@ -29,10 +29,6 @@ const router = createBrowserRouter([
                 element: <Home />,
             },
             {
-                path: clientRoutes.cart,
-                element: <Cart />,
-            },
-            {
                 path: clientRoutes.products,
                 element: <Products />,
             },
@@ -60,6 +56,10 @@ const router = createBrowserRouter([
                         path: clientRoutes.favorites,
                         element: <Favorites />,
                     },
+                    {
+                        path: clientRoutes.cart,
+                        element: <Cart />,
+                    },
                 ],
             },
             {
@@ -68,7 +68,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '*',
-                element: <NotFound />,
+                element: <Error />,
             },
         ],
     },

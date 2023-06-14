@@ -20,7 +20,6 @@ export const useAuth = () => {
     }, [cookies.refreshToken]);
 
     const saveCredentials = (creds: AuthSuccess) => {
-        console.log(creds);
         const { refreshToken, accessToken } = creds;
         const refreshExpires = new Date();
         refreshExpires.setDate(refreshExpires.getDate() + 7);
@@ -68,5 +67,11 @@ export const useAuth = () => {
             .then(saveCredentials)
             .catch(() => onError('refetch'));
 
-    return { isAuth, loading, login, register, isError };
+    const logout = () => {
+        removeCookie(accessTokenName);
+        removeCookie(refreshTokenName);
+        resetAuth({ isError: false });
+    };
+
+    return { isAuth, loading, login, register, logout, isError };
 };

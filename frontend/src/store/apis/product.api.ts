@@ -15,6 +15,7 @@ export type Product = {
     name: string;
     price: number;
     slug: string;
+    owner: string;
     id: string;
 };
 
@@ -29,15 +30,14 @@ export type GetProductsQueries = CommonQueries & {
 export const productApi = createApi({
     reducerPath: 'product/api',
     baseQuery: getBaseQuery('products', false),
+    tagTypes: ['Products'],
     endpoints: ({ mutation, query }) => ({
         getProducts: query<Product[], GetProductsQueries>({
-            query: (params) => {
-                console.log('params', params);
-                return {
-                    url: '',
-                    params,
-                };
-            },
+            query: (params) => ({
+                url: '',
+                params,
+            }),
+            providesTags: ['Products'],
         }),
         getProduct: query<Product, string>({
             query: (id) => id,
@@ -54,6 +54,7 @@ export const productApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Products'],
         }),
         updateProduct: mutation<Product, UpdateEntity<Product>>({
             query: (body) => ({
@@ -67,6 +68,7 @@ export const productApi = createApi({
                 url: id,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Products'],
         }),
     }),
 });

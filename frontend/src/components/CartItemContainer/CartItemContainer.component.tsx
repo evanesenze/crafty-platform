@@ -1,24 +1,35 @@
 import React from 'react';
 import style from './CartItemContainer.style.module.css';
-import { Col, Modal, Row, Skeleton, Typography } from 'antd';
+import { Col, Modal, Row, Skeleton, Typography, message } from 'antd';
 import { CloseOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Product, useDeleteFromBasketMutation, useGetProfileQuery, useUpdateOrderItemMutation, useUpdateProductMutation } from 'store';
-import { getPrice } from 'utils';
+import {
+    Product,
+    useDeleteFromBasketMutation,
+    useDeleteProductMutation,
+    useGetProfileQuery,
+    useUpdateOrderItemMutation,
+    useUpdateProductMutation,
+} from 'store';
+import { clientRoutes, getPrice } from 'utils';
 import { Image } from '../Image';
 import { QuantityFn } from 'widgets';
+import { Link } from '..';
+import { generatePath } from 'react-router-dom';
 
 const { Text } = Typography;
 
 const fontStyle: React.CSSProperties = { fontSize: 24 };
 
 type CartItemContainerProps = {
-    product: Product;
+    product: Product | null;
     count?: number;
     price?: number;
     itemId?: string;
+    canDelete?: boolean;
+    height?: string | number;
 };
 
-const useControllers = (count?: number, itemId?: string) => {
+const useControllers = (productDeleted: boolean, count?: number, itemId?: string) => {
     const [deleteFromBasket, basketState] = useDeleteFromBasketMutation();
     const [updateOrderItem, orderState] = useUpdateOrderItemMutation();
     const { refetch, isFetching } = useGetProfileQuery();
@@ -43,20 +54,32 @@ const useControllers = (count?: number, itemId?: string) => {
             onOk: async () => deleteFromBasket(id).unwrap().catch(console.error),
         });
 
-    const onPlus = () => !!itemId && !!count && handleCount(itemId, count + 1);
-    const onMinus = () => !!itemId && (!!count && count > 1 ? handleCount(itemId, count - 1) : onDelete(itemId));
+    const onPlus = () => !productDeleted && !!itemId && !!count && handleCount(itemId, count + 1);
+    const onMinus = () => !productDeleted && !!itemId && (!!count && count > 1 ? handleCount(itemId, count - 1) : onDelete(itemId));
 
     return { onDelete, onPlus, onMinus, loading };
 };
 
-const CartItemControls: React.FC<Omit<CartItemContainerProps, 'product' | 'price'>> = ({ count, itemId }) => {
-    const { onDelete, onMinus, onPlus, loading } = useControllers(count, itemId);
+type CartItemControlsProps = Omit<CartItemContainerProps, 'product' | 'price' | 'canDelete' | 'height'> & { productDeleted: boolean };
+
+const CartItemControls: React.FC<CartItemControlsProps> = ({ count, itemId, productDeleted }) => {
+    const { onDelete, onMinus, onPlus, loading } = useControllers(productDeleted, count, itemId);
     if (!count) return null;
     if (loading) return <Skeleton.Input active size="large" />;
 
     return (
         <Row align="middle" wrap={false}>
-            <Col style={{ borderRadius: 9, border: '1px solid black', padding: '5px 15px', display: 'flex', gap: 15 }}>
+            <Col
+                style={{
+                    borderRadius: 9,
+                    border: '1px solid black',
+                    padding: '5px 15px',
+                    display: 'flex',
+                    gap: 15,
+                    cursor: productDeleted ? 'not-allowed' : 'default',
+                    color: productDeleted ? 'gray' : 'black',
+                }}
+            >
                 <MinusOutlined onClick={onMinus} />
                 <span>{count}</span>
                 <PlusOutlined onClick={onPlus} />
@@ -68,36 +91,59 @@ const CartItemControls: React.FC<Omit<CartItemContainerProps, 'product' | 'price
     );
 };
 
-export const CartItemContainer: React.FC<CartItemContainerProps> = ({ product, price, ...props }) => {
-    const { images, name } = product;
-    const priceStr = getPrice({ value: price ?? product.price });
+export const CartItemContainer: React.FC<CartItemContainerProps> = ({ product, price, canDelete, height = 200, ...props }) => {
+    const { images, name, id, price: productPrice } = product ?? {};
+    const productDeleted = !product;
+    const priceStr = productDeleted ? '' : getPrice({ value: price ?? productPrice ?? 0 });
+
+    const [deleteProduct] = useDeleteProductMutation();
+
+    const onDelete = () =>
+        product &&
+        Modal.confirm({
+            title: 'Подтвердите действие',
+            content: `Вы действительно хотите удалить товар "${product.name}"?`,
+            onOk: () =>
+                deleteProduct(product.id)
+                    .unwrap()
+                    .then(() => message.success('Товар удален'))
+                    .catch(console.error),
+        });
+
+    const productPath = id ? generatePath(clientRoutes.product, { id }) : '';
 
     return (
         <Row wrap={false}>
             <Col>
-                <Image src={images[0]} height="200px" className={style.cart_item_image} />
+                <Image src={images?.[0] ?? ''} height={height} className={style.cart_item_image} />
             </Col>
             <Col flex="auto" offset={1} style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'column' }}>
                 <Row>
                     <Col>
                         <Row>
-                            <Text ellipsis strong style={fontStyle}>
-                                {name}
-                            </Text>
-                        </Row>
-                        <Row>
-                            <Text style={{ color: '#929292' }}>Мастер Анастасия</Text>
+                            <Link to={productPath}>
+                                <Text ellipsis strong style={{ ...fontStyle, color: productDeleted ? 'gray' : 'black' }}>
+                                    {productDeleted ? 'Товар удален' : name}
+                                </Text>
+                            </Link>
                         </Row>
                     </Col>
                 </Row>
                 <Row>
-                    <CartItemControls {...props} />
+                    <CartItemControls {...props} productDeleted={productDeleted} />
                 </Row>
             </Col>
             <Col>
-                <Text strong ellipsis style={fontStyle}>
-                    {priceStr}
-                </Text>
+                <Row style={{ height: '100%', flexDirection: 'column' }} justify="space-between">
+                    <Text strong ellipsis style={fontStyle}>
+                        {priceStr}
+                    </Text>
+                    {canDelete && (
+                        <Row justify="end">
+                            <CloseOutlined onClick={onDelete} />
+                        </Row>
+                    )}
+                </Row>
             </Col>
         </Row>
     );

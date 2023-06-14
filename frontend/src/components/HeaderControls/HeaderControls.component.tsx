@@ -62,5 +62,5 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({ exclude, include
         nav(info.key);
     };
 
-    return <Menu {...props} onChange={console.log} onSelect={onSelect} className={className} mode="horizontal" items={tabs} />;
+    return <Menu {...props} onSelect={onSelect} className={className} mode="horizontal" items={tabs} />;
 };

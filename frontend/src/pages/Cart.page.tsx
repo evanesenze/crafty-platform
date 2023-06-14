@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Form, Input, Modal, Row, Skeleton, Typography } from 'antd';
+import { Button, Col, Divider, Form, Input, Modal, Row, Skeleton, Typography, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { OrderItem, useCreateOrderMutation, useGetProfileQuery } from 'store/apis';
 import { CartLayout } from 'widgets';
@@ -57,7 +57,9 @@ export const Cart: React.FC = () => {
         profile &&
             createOrder({ address, comment, buyer: profile.id, seller: profile.id, items, discount: 0 })
                 .unwrap()
-                .then(console.log)
+                .then(() => {
+                    message.success('Заказ успешно создан');
+                })
                 .catch(console.error);
     };
 

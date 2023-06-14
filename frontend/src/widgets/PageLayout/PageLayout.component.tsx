@@ -1,10 +1,9 @@
 import React, { KeyboardEventHandler, useRef } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
-import { Input, InputProps, InputRef, Layout } from 'antd';
+import { Input, InputProps, InputRef, Layout, MenuProps } from 'antd';
 import style from './PageLayout.style.module.css';
-import { HeaderControls, Logo, CategoriesButton, CategoriesList, ControlState } from 'components';
+import { HeaderControls, Logo, CategoriesList, ControlState } from 'components';
 import { useAuth } from 'hooks';
-import { useGetCategoriesQuery } from 'store/apis';
 import { queryParamName } from 'utils/searchParamNames';
 import { clientRoutes } from 'utils/config';
 
@@ -15,7 +14,7 @@ const inputProps: InputProps = {
     placeholder: 'Введите запрос',
 };
 
-const unauthExclude: ControlState[] = [ControlState.Create, ControlState.Favorites, ControlState.Orders];
+const unauthExclude: ControlState[] = [ControlState.Create, ControlState.Favorites, ControlState.Orders, ControlState.Cart];
 
 export const PageLayout: React.FC = () => {
     const { isAuth } = useAuth();
@@ -31,14 +30,16 @@ export const PageLayout: React.FC = () => {
     };
 
     const defaultValue = searchParams.get(queryParamName) ?? undefined;
+    const exclude = isAuth ? [] : unauthExclude;
+    const mode: MenuProps['mode'] = 'horizontal';
 
     return (
         <Layout className={style.layout}>
             <Header className={style.layout__header}>
                 <Logo className={style.layout_header__logo} />
                 <Input defaultValue={defaultValue} ref={inputRef} {...inputProps} onPressEnter={onSearch} />
-                <HeaderControls exclude={isAuth ? [] : unauthExclude} className={style.layout_header__controls} />
-                <CategoriesList mode="horizontal" className={style.layout_header__categories_list} />
+                <HeaderControls exclude={exclude} className={style.layout_header__controls} />
+                <CategoriesList mode={mode} className={style.layout_header__categories_list} />
             </Header>
             <Content className={style.layout__content}>
                 <Outlet />

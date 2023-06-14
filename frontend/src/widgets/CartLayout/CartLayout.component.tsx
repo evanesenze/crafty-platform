@@ -23,13 +23,12 @@ export const CartLayout: React.FC<CartLayoutProps> = ({ onSelect, selectedItems 
                 const { id, price, product, quantity } = item;
                 const checked = !!find(selectedItems, (x) => x.id === item.id);
                 const onChange = () => onSelect(item);
-                console.log(checked);
                 return (
                     <List.Item key={id}>
                         <Row wrap={false} style={{ width: '100%' }}>
                             <Col>
                                 <Row align="middle" style={{ height: '100%' }}>
-                                    <Checkbox checked={checked} onChange={onChange} />
+                                    <Checkbox checked={checked} disabled={!product} onChange={onChange} />
                                 </Row>
                             </Col>
                             <Col flex={1} offset={1}>
