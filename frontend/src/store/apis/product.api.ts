@@ -1,12 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
-import { UpdateEntity } from '..';
-
-export type Category = {
-    name: string;
-    slug: string;
-    id: string;
-};
+import { Category, CommonQueries, UpdateEntity } from '..';
 
 export type Product = {
     category: Category | string;
@@ -18,8 +12,6 @@ export type Product = {
     owner: string;
     id: string;
 };
-
-export type CommonQueries = {};
 
 export type GetProductsQueries = CommonQueries & {
     ownerId?: string;

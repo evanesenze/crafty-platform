@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "lunch-room-app",
-    "slug": "lunch-room-app",
+    "name": "crafty-platform-app",
+    "slug": "crafty-platform-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,9 +14,12 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.evanesenze.craftyPlatformApp"
     },
     "android": {
       "usesCleartextTraffic": true,
@@ -24,14 +27,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.evanesenze.lunchroomapp"
+      "package": "com.evanesenze.craftyPlatformApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "2006a96c-d3ca-41b3-b916-d518e51461bf"
+        "projectId": "9965b8f9-e9d7-44be-8353-e12d66cab36e"
       }
     }
   }

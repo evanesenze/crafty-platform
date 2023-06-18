@@ -62,9 +62,69 @@ const createProducts = async (quantity: number) => {
   console.log(`Created ${products.length} products`);
 };
 
+const createProductsWithCategory = async (
+  quantity: number,
+  categoryId: string,
+  ownerId: string,
+) => {
+  await connect(process.env.BASE_URL);
+  const products: any[] = [];
+  const existCategory = await Category.findById(categoryId).exec();
+  if (!existCategory) throw new Error('Category not found');
+
+  for (let i = 0; i < quantity; i++) {
+    const productName = faker.commerce.productName();
+    const categoryName = faker.commerce.department();
+
+    const product = new Product({
+      name: productName,
+      slug: getSlug(productName),
+      description: faker.commerce.productDescription(),
+      price: faker.commerce.price(500, 10000),
+      images: Array.from({ length: faker.datatype.number({ min: 2, max: 6 }) })
+        .fill(null)
+        .map(() => faker.image.imageUrl(500, 500, categoryName, true)),
+      category: categoryId,
+      owner: ownerId,
+    });
+
+    await product.save();
+
+    products.push(product);
+  }
+
+  console.log(`Created ${products.length} products`);
+};
+
+const createProductsWithCategories = async (
+  quantity: number,
+  categoryIds: string[],
+  ownerId: string,
+) => {
+  for (const categoryId of categoryIds) {
+    await createProductsWithCategory(quantity, categoryId, ownerId);
+  }
+};
+
 const main = async () => {
   console.log('Start seeding...');
-  await createProducts(10);
+  //   await createProducts(10);
+  await createProductsWithCategories(
+    10,
+    [
+      '648f71440bfd598e244bc19a',
+      '648f71b30bfd598e244bc19e',
+      '648f71c50bfd598e244bc1a2',
+      '648f71d40bfd598e244bc1a6',
+      '648f71de0bfd598e244bc1aa',
+      '648f71f30bfd598e244bc1ae',
+      '648f72000bfd598e244bc1b2',
+      '648f72200bfd598e244bc1b6',
+      '648f72410bfd598e244bc1bc',
+      '648f70020bfd598e244bc184',
+    ],
+    '648f6f530bfd598e244bc171',
+  );
 };
 
 main()

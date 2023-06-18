@@ -2,8 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { getBaseQuery } from 'utils';
 import { Product } from './product.api';
 import { UserProfile } from './user.api';
-
-export type CommonQueries = {};
+import { CommonQueries } from '..';
 
 export type GetReviewsQueries = CommonQueries & {
     productId?: string;

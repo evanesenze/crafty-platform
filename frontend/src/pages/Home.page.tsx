@@ -6,11 +6,11 @@ import { useGetRecommendationsQuery } from 'store/apis';
 
 const images = [
     {
-        category: '642e7f71e9cc885437fef317',
+        category: '648f72410bfd598e244bc1bc',
         url: ad1,
     },
     {
-        category: '642e7f73e9cc885437fef324',
+        category: '648f72410bfd598e244bc1bc',
         url: ad1,
     },
 ];
