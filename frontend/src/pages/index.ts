@@ -9,3 +9,4 @@ export * from './Orders.page';
 export * from './Favorites.page';
 export * from './Products.page';
 export * from './Product.page';
+export * from './Education.page';

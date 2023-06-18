@@ -8,7 +8,7 @@ import './style.less';
 import { IntlProvider } from 'react-intl';
 import { AuthProvider, PageLayout } from 'widgets';
 import { createBrowserRouter } from 'react-router-dom';
-import { Home, Cart, Error, NotFound, Profile, Auth, Create, Orders, Favorites, Products, Product } from 'pages';
+import { Home, Cart, Error, NotFound, Profile, Auth, Create, Orders, Favorites, Products, Product, Education } from 'pages';
 import ru from 'antd/locale/ru_RU';
 import { Provider } from 'react-redux';
 import { store } from 'store';
@@ -35,6 +35,10 @@ const router = createBrowserRouter([
             {
                 path: clientRoutes.product,
                 element: <Product />,
+            },
+            {
+                path: clientRoutes.education,
+                element: <Education />,
             },
             {
                 path: '/',

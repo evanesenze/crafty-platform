@@ -6,3 +6,4 @@ export * from './ProductsWall';
 export * from './Comment';
 export * from './Rating';
 export * from './AuthProvider';
+export * from './TinderBlock';

@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { OrderItem, useCreateOrderMutation, useGetProfileQuery } from 'store/apis';
 import { CartLayout } from 'widgets';
 import { entries, find, reduce, reject, some } from 'lodash';
-import { getPrice, requiredRule } from 'utils';
+import { clientRoutes, getPrice, requiredRule } from 'utils';
 import { NumberInput } from 'components/Input';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
@@ -29,11 +30,12 @@ const oderDetailAlias: Record<OrderDetailKey, string> = {
 };
 
 export const Cart: React.FC = () => {
-    const { data: profile, isFetching } = useGetProfileQuery();
+    const { data: profile, isFetching, refetch } = useGetProfileQuery();
     const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
-    const [createOrder] = useCreateOrderMutation();
+    const [createOrder, orderState] = useCreateOrderMutation();
     const [form] = Form.useForm<OrderDetails>();
     const [isModalOpen, setModalOpen] = useState(false);
+    const nav = useNavigate();
 
     const onSelect = (item: OrderItem) => {
         setSelectedItems((x) => (find(x, (x) => x.id === item.id) ? reject(x, (x) => x.id === item.id) : [...x, item]));
@@ -59,6 +61,8 @@ export const Cart: React.FC = () => {
                 .unwrap()
                 .then(() => {
                     message.success('Заказ успешно создан');
+                    nav(clientRoutes.orders);
+                    refetch();
                 })
                 .catch(console.error);
     };
@@ -118,7 +122,14 @@ export const Cart: React.FC = () => {
                         ))}
                 </Col>
             </Row>
-            <Modal open={isModalOpen} title="Уточните детали заказа" okText="Оформить заказ" onOk={form.submit} onCancel={onCancel}>
+            <Modal
+                open={isModalOpen}
+                title="Уточните детали заказа"
+                okText="Оформить заказ"
+                okButtonProps={{ loading: orderState.isLoading }}
+                onOk={form.submit}
+                onCancel={onCancel}
+            >
                 <Form form={form} layout="vertical" onFinish={onFinish}>
                     <Row>
                         <Col span={11}>

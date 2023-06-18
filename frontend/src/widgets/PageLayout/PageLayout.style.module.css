@@ -15,7 +15,7 @@
     grid-template-areas:
         'a b c'
         'd d d';
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto auto 1fr;
     grid-template-rows: 55px auto;
     gap: 25px 50px;
 }
@@ -25,12 +25,13 @@
 }
 
 .layout_header__search {
-    max-width: 530px;
-    min-width: 400px;
+    width: 530px;
     grid-area: b;
 }
 
 .layout_header__controls {
+    display: flex;
+    justify-content: flex-end;
     grid-area: c;
 }
 

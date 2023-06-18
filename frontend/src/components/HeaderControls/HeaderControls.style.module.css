@@ -6,3 +6,7 @@
 .header_control {
     font-size: 30px !important;
 }
+
+.header_control__revert svg {
+    transform: scale(-1, 1);
+}
